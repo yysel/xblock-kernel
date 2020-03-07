@@ -5,13 +5,20 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "纪猛",
+            "name": "Jim",
             "email": "927994432@qq.com"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "XBlock\\Kernel\\":"src/"
+        }
+    },
     "require": {
         "php": "^7.2",
         "laravel/lumen-framework": "^6.0",
-        "maatwebsite/excel": "^3.1"
+        "maatwebsite/excel": "^3.1",
+        "xblock/helper":"*",
+        "xblock/access":"*"
     }
 }
