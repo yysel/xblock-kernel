@@ -217,7 +217,7 @@ abstract class Fetch
     {
         if ($this->builder instanceof Builder) {
             $this->queryList = $this->builder->getQuery()->wheres;
-            return $this->builder->get();
+            return $this->builder->cursor();
         }
         return $this->builder->get();
     }

@@ -13,6 +13,7 @@ use XBlock\Kernel\Elements\Button;
 use XBlock\Kernel\Elements\Component;
 use XBlock\Kernel\Elements\Components\Base;
 use XBlock\Kernel\Elements\Fields\BaseField;
+use XBlock\Kernel\Fetch\Fetch;
 
 
 class Block
@@ -146,10 +147,11 @@ class Block
         ];
     }
 
-    /** 获取Fetch的实例化
-     * @return mixed
+    /**
+     * 获取Fetch的实例化
+     * @return Fetch
      */
-    final  private function fetch()
+    final  private function fetch(): Fetch
     {
         $type = ucfirst($this->origin_type);
         $fetch_class = "XBlock\Kernel\Fetch\\{$type}Fetch";

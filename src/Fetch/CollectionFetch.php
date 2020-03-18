@@ -11,7 +11,7 @@ namespace XBlock\Kernel\Fetch;
 
 use Illuminate\Support\Collection;
 
-class MethodFetch extends Fetch
+class CollectionFetch extends Fetch
 {
 
 

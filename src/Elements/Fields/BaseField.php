@@ -23,6 +23,7 @@ class BaseField extends Element
     protected $sortable = false;
     protected $exportable = true;
     protected $importable = true;
+    protected $description;
     protected $require = false;
     protected $default;
     protected $value_type = 'normal';
@@ -62,12 +63,9 @@ class BaseField extends Element
         return $this;
     }
 
-    public function addable($require = false, $value_type = 'normal', $default = null): self
+    public function addable(): self
     {
         $this->addable = true;
-        $this->require = $require;
-        $this->default = $default;
-        if ($value_type) $this->value_type = $value_type;
         return $this;
     }
 
@@ -89,21 +87,22 @@ class BaseField extends Element
         return $this;
     }
 
-    public function editable($require = false, $value_type = 'normal'): self
+    public function description($description): self
     {
-        $this->editable = true;
-        $this->require = $require;
-        $this->value_type = $value_type;
+        $this->description = $description;
         return $this;
     }
 
-    public function writable($require = false, $value_type = 'normal', $default = null): self
+    public function editable(): self
+    {
+        $this->editable = true;
+        return $this;
+    }
+
+    public function writable(): self
     {
         $this->editable = true;
         $this->addable = true;
-        $this->require = $require;
-        $this->default = $default;
-        if ($value_type) $this->value_type = $value_type;
         return $this;
     }
 
@@ -190,6 +189,7 @@ class BaseField extends Element
             'index' => $this->index,
             'input' => $this->input,
             'permission' => $this->index,
+            'description' => $this->description,
             'dict' => $this->dict,
             'relation' => $this->relation,
             'visible' => $this->visible,

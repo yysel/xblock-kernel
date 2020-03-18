@@ -9,9 +9,9 @@
 namespace XBlock\Kernel\Blocks;
 
 
-class MethodBlock extends Block
+class CollectionBlock extends Block
 {
-    public $origin_type = 'method';
+    public $origin_type = 'collection';
 
     public $origin = 'content';
 
