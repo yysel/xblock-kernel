@@ -11,37 +11,56 @@ namespace XBlock\Kernel\Services;
 
 class BlockService
 {
-    public function findBlockClass($block_name, $file_list = [])
+    public function findBlockClass($block_name)
     {
-         $this->findBlockClassList();
-        $block_name = pascal($block_name);
-        $core = $file_list ? $file_list : read_dir(core_path());
-        foreach ($core as $project => $dir) {
-            $block_dir = $dir . '/Blocks';
-            if (is_dir($block_dir)) {
-                $block_configs = read_dir($block_dir, 'all');
-                if (isset($block_configs[$block_name])) {
-                    return is_dir($block_configs[$block_name]) ? '\Core\\' . $project . '\Blocks\\' . $block_name . '\Block' : '\Core\\' . $project . '\Blocks\\' . $block_name;
-                }
-            }
-        }
+        $block_list = $this->findBlockClassList();
+        return isset($block_list[$block_name]) ? $block_list[$block_name] : null;
     }
 
     public function findBlockClassList()
     {
-        $core = read_dir(core_path());
-        $block_list = [];
-        foreach ($core as $project => $dir) {
-            $block_dir = $dir . '/Blocks';
-            if (is_dir($block_dir)) {
-                $block_configs = read_dir($block_dir, 'all');
-                foreach ($block_configs as $key => $value) {
-                    if (is_dir($value)) {
-                        $block_list[unpascal($key)] = '\Core\\' . $project . '\Blocks\\' . $key . '\Block';
-                    } else $block_list[unpascal($key)] = '\Core\\' . $project . '\Blocks\\' . $key;
-                }
-            }
+        $files = $this->getAllBlockFiles();
+        $class = [];
+        foreach ($files as $key => $file) {
+            $class[unpascal($key)] = $this->getNameSpaceFormFile($file);
         }
-        return $block_list;
+        return $class;
+    }
+
+    public function getNameSpaceFormFile($file)
+    {
+        return ucfirst(strtr($file, [base_path() . '/' => '', '.php' => '', '/' => '\\', '//' => '\\']));
+    }
+
+    public function getAllBlockFiles()
+    {
+        $all_paths = $this->getAllBlockPaths();
+        $block_lists = [];
+        foreach ($all_paths as $path) {
+            $block_lists = array_merge($block_lists, read_dir($path, 'file'));
+        }
+        return $block_lists;
+    }
+
+    public function getAllBlockPaths()
+    {
+        $block_path = config('xblock.block_path', [base_path('app/Blocks')]);
+        $path_lists = [];
+        foreach ($block_path as $path) {
+            if (strpos($path, '*') === false && is_dir($path)) $path_lists[] = $path;
+            else $path_lists = array_merge($path_lists, $this->scanFuzzyPath($path));
+        }
+        return $path_lists;
+    }
+
+    public function scanFuzzyPath($path)
+    {
+        list($base, $inner) = explode('*', $path);
+        $paths = [];
+        $second_paths = read_dir($base, 'dir');
+        foreach ($second_paths as $second_path) {
+            $paths[] = rtrim($second_path . $inner, '/');
+        }
+        return $paths;
     }
 }

@@ -69,21 +69,17 @@ class FileFactory
     }
 
 
-    public function makeBlockConfig($name)
+    public function makeBlockConfig($name,$path , $namespace)
     {
         try {
-            $app_dir = $this->getAppDirPath();
-            $core_name = ucfirst(strtolower($this->core_name));
-            $namespace = $core_name . '\\' . $this->app_name . '\Blocks';
-            $path = $app_dir . '/Blocks';
             $name = pascal($name);
-            if (is_file(rtrim($path) . '/' . $name . '.php')) return modal(false)->info('创建失败，配置文件已存在！');
+            if (is_file(rtrim($path) . '/' . $name . '.php')) return '创建失败，配置文件已存在！';
             $model = $this->checkDir($path)->makeFileIfNotExsit(rtrim($path) . '/' . $name . '.php');
             $content = $this->file_contents::BlockConfig;
             $content = strtr($content, ['{namespace}' => $namespace, '{name}' => $name]);
-            if (fwrite($model, $content)) return modal(true)->info('配置文件创建成功！');
+            if (fwrite($model, $content)) return true;
         } catch (\Exception $exception) {
-            return modal(false)->info('创建失败：' . $exception->getMessage());
+            return '创建失败：' . $exception->getMessage();
         }
     }
 
