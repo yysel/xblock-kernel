@@ -18,13 +18,19 @@ return [
     'register' => [
         'menu' => \Core\MenuRegister::class,
         'permission' => \Core\PermissionRegister::class,
-        'hook' => \XBlock\Kernel\GlobalHookRegister::class
+        'hook' => \XBlock\Kernel\GlobalHookRegister::class,
+        'dict' => null
     ],
 
     /**
      * 内置路由前缀
      */
     'prefix' => 'api/xblock',
+
+    /**
+     * 默认的认证中间件
+     */
+    'middleware' => 'auth:api',
 
     /**
      *  block注册列表

@@ -18,15 +18,8 @@ class KernelProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/../database/migrations' => database_path('migrations'),
-            ], 'XBlock-auth-migrations');
-
-
-//            $this->commands([
-//                Console\InstallCommand::class,
-//                Console\ClientCommand::class,
-//                Console\KeysCommand::class,
-//            ]);
+                __DIR__ . '/../resources' => base_path('/public/'),
+            ], 'public');
         }
     }
 
@@ -39,9 +32,9 @@ class KernelProvider extends ServiceProvider
     {
         $this->app->configure('xblock');
         $this->registerMigrations();
-        $this->app->router->group(['prefix' => config('xblock.prefix', 'api/xblock'), 'namespace' => 'XBlock\Kernel', 'middleware' => 'auth'], function ($router) {
+        $this->app->router->group(['prefix' => config('xblock.prefix', 'api/xblock'), 'namespace' => 'XBlock\Kernel', 'middleware' => config('xblock.middleware', 'auth:api')], function ($router) {
             $router->post('/menu', 'KernelController@menu');
-            $router->post('/{notification}', 'KernelController@notification');
+            $router->post('/notification', 'KernelController@notification');
             $router->post('/{block}/{action}', 'BlockController@action');
         });
 

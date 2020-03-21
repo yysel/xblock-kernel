@@ -23,6 +23,11 @@ class Button extends Element
     const INNER = 'inner';
     const TOP = 'top';
 
+    static public function default($index, $title = null): BaseButton
+    {
+        return Large::make($index, $title);
+    }
+
     static public function large($index, $title = null): BaseButton
     {
         return Large::make($index, $title);

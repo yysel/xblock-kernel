@@ -9,6 +9,7 @@
 namespace XBlock\Kernel\Elements\Fields;
 
 
+use phpDocumentor\Reflection\Types\Boolean;
 use XBlock\Kernel\Elements\Element;
 
 class BaseField extends Element
@@ -56,16 +57,29 @@ class BaseField extends Element
         return $this;
     }
 
-    public function filterable($position = 'top'): self
+    public function filterable($filterable = true): self
     {
-        $this->filterable = true;
-        $this->filter_position = in_array($position, ['top', 'header']) ? $position : 'top';
+        $this->filterable = $filterable;
+        $this->filter_position = 'top';
         return $this;
     }
 
-    public function addable(): self
+    public function addable($addable = true): self
     {
-        $this->addable = true;
+        $this->addable = $addable;
+        return $this;
+    }
+
+    public function editable($editable = true): self
+    {
+        $this->editable = $editable;
+        return $this;
+    }
+
+    public function writable($writable = true): self
+    {
+        $this->editable = $writable;
+        $this->addable = $writable;
         return $this;
     }
 
@@ -93,18 +107,6 @@ class BaseField extends Element
         return $this;
     }
 
-    public function editable(): self
-    {
-        $this->editable = true;
-        return $this;
-    }
-
-    public function writable(): self
-    {
-        $this->editable = true;
-        $this->addable = true;
-        return $this;
-    }
 
     public function disExportable(): self
     {

@@ -9,7 +9,7 @@
 namespace XBlock\Kernel\Models;
 
 
-class Role extends BlockBaseModel
+class Role extends BaseModel
 {
     protected $table = 'role';
 
