@@ -72,7 +72,6 @@ class FileFactory
     public function makeBlockConfig($name,$path , $namespace)
     {
         try {
-            $name = pascal($name);
             if (is_file(rtrim($path) . '/' . $name . '.php')) return '创建失败，配置文件已存在！';
             $model = $this->checkDir($path)->makeFileIfNotExsit(rtrim($path) . '/' . $name . '.php');
             $content = $this->file_contents::BlockConfig;

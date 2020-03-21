@@ -28,11 +28,12 @@ class TemplateCmd extends Command
     {
         $module_list = $this->getModule();
         $block = $this->argument('name');
-        $module = count($module_list) > 1 ? $this->choice('What is your name?', $module_list, $module_list[0]) : $module_list[0];
-        if ($block && $module) {
+        $path = count($module_list) > 1 ? $this->choice('What is your name?', $module_list, $module_list[0]) : $module_list[0];
+        if ($block && $path) {
             $factory = new  FileFactory();
-            $res = $factory->makeBlockConfig($block, $module, $this->ser->getNameSpaceFormFile($module));
-            if ($res === true) $this->info('创建成功！');
+            $name = pascal($block);
+            $res = $factory->makeBlockConfig($name, $path, $this->ser->getNameSpaceFormFile($path));
+            if ($res === true) $this->info('创建成功:' . rtrim($path) . '/' . $name . '.php');
             else $this->error($res);
         }
 
