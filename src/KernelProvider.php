@@ -16,11 +16,7 @@ class KernelProvider extends ServiceProvider
 
     public function boot()
     {
-        if ($this->app->runningInConsole()) {
-            $this->publishes([
-                __DIR__ . '/../resources' => base_path('/public/'),
-            ], 'public');
-        }
+
     }
 
     /**
