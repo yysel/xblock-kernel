@@ -9,6 +9,7 @@
 namespace XBlock\Kernel\Blocks;
 
 use Illuminate\Support\Collection;
+use XBlock\Helper\Tool;
 use XBlock\Kernel\Elements\Button;
 use XBlock\Kernel\Elements\Component;
 use XBlock\Kernel\Elements\Components\Base;
@@ -76,7 +77,7 @@ class Block
         if (method_exists($this, 'boot')) $this->boot();
         if (!$this->index) {
             $class = get_class($this);
-            $this->index = unpascal(last(explode('\\', $class)));
+            $this->index = Tool::unpascal(last(explode('\\', $class)));
         }
         $component = $this->component();
         if ($component instanceof Base) {

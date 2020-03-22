@@ -9,6 +9,8 @@
 namespace XBlock\Kernel\Services;
 
 
+use XBlock\Helper\Tool;
+
 class BlockService
 {
     public function findBlockClass($block_name)
@@ -22,7 +24,7 @@ class BlockService
         $files = $this->getAllBlockFiles();
         $class = [];
         foreach ($files as $key => $file) {
-            $class[unpascal($key)] = $this->getNameSpaceFormFile($file);
+            $class[Tool::unpascal($key)] = $this->getNameSpaceFormFile($file);
         }
         return $class;
     }
@@ -37,7 +39,7 @@ class BlockService
         $all_paths = $this->getAllBlockPaths();
         $block_lists = [];
         foreach ($all_paths as $path) {
-            $block_lists = array_merge($block_lists, read_dir($path, 'file'));
+            $block_lists = array_merge($block_lists, Tool::readDir($path, 'file'));
         }
         return $block_lists;
     }
@@ -47,7 +49,7 @@ class BlockService
         $block_path = config('xblock.block_path', [base_path('app/Blocks')]);
         $path_lists = [];
         foreach ($block_path as $path) {
-            if (strpos($path, '*') === false && is_dir($path)) $path_lists[] = $path;
+            if (strpos($path, '*') === false ) $path_lists[] = $path;
             else $path_lists = array_merge($path_lists, $this->scanFuzzyPath($path));
         }
         return $path_lists;
@@ -57,7 +59,7 @@ class BlockService
     {
         list($base, $inner) = explode('*', $path);
         $paths = [];
-        $second_paths = read_dir($base, 'dir');
+        $second_paths = Tool::readDir($base, 'dir');
         foreach ($second_paths as $second_path) {
             $paths[] = rtrim($second_path . $inner, '/');
         }

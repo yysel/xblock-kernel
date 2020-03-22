@@ -11,10 +11,11 @@ namespace XBlock\Kernel;
 
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use XBlock\Helper\Tool;
 use XBlock\Kernel\Blocks\Block;
 use XBlock\Kernel\Elements\Action;
 //use XBlock\Kernel\Models\BlockModel;
-use XBlock\Helper\CodeResponse;
+use XBlock\Helper\Response\CodeResponse;
 use XBlock\Kernel\Services\BlockService;
 
 class BlockController
@@ -41,7 +42,7 @@ class BlockController
                 $log = $event->log;
             }
         }
-        $action = camelize($action);
+        $action = Tool::camelize($action);
         if (method_exists($blockObject, $action)) {
             $data = $blockObject->$action($request);
             if ($data instanceof CodeResponse || $data instanceof Response) $response = $data;

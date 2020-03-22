@@ -10,6 +10,7 @@ namespace XBlock\Kernel\Elements\Fields;
 
 
 use phpDocumentor\Reflection\Types\Boolean;
+use XBlock\Helper\Tool;
 use XBlock\Kernel\Elements\Element;
 
 class BaseField extends Element
@@ -160,10 +161,10 @@ class BaseField extends Element
     {
         if (!$dict || is_string($dict)) {
             $method = $dict ? $dict : $this->index;
-            $method = pascal($method);
+            $method = Tool::pascal($method);
             $object = app('field_dict');
             $this->dict = method_exists($object, $method) ? $object->$method() : [];
-        } elseif (isOneArray($dict)) $this->dict = create_dict($dict);
+        } elseif (Tool::isOneArray($dict)) $this->dict = create_dict($dict);
         else $this->dict = $dict;
 
         return $this;

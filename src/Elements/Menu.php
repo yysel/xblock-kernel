@@ -9,6 +9,7 @@
 namespace XBlock\Kernel\Elements;
 
 use Illuminate\Support\Collection;
+use XBlock\Helper\Tool;
 use XBlock\Kernel\MenuRegister;
 
 class Menu
@@ -109,7 +110,7 @@ class Menu
         if (class_exists($block)) {
             $explode = explode('\\', $block);
             $name = end($explode);
-            $name = unpascal($name);
+            $name = Tool::unpascal($name);
         } else $name = $block;
         return $name;
     }

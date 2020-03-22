@@ -12,6 +12,7 @@ namespace XBlock\Kernel\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Schema;
+use XBlock\Helper\Tool;
 
 class BaseModel extends Model
 {
@@ -46,7 +47,7 @@ class BaseModel extends Model
     protected function createUuid()
     {
         $method = in_array($this->uuid_type, ['guid', 'suid', 'muid', 'luid']) ? $this->uuid_type : 'guid';
-        if (!$this->uuid) $this->uuid = $method();
+        if (!$this->uuid) $this->uuid = Tool::$method();
     }
 
     public function getFields()

@@ -10,14 +10,16 @@ return [
     /**
      * 业务代码的存放目录
      */
-    'core_part' => base_path('core'),
+    'block_path' => [
+        base_path('app')
+    ],
 
     /**
      * 注册系统菜单的类
      */
     'register' => [
-        'menu' => \Core\MenuRegister::class,
-        'permission' => \Core\PermissionRegister::class,
+        'menu' => \XBlock\Kernel\MenuRegister::class,
+        'permission' => \XBlock\Kernel\PermissionRegister::class,
         'hook' => \XBlock\Kernel\GlobalHookRegister::class,
         'dict' => null
     ],
