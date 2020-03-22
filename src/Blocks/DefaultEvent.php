@@ -38,6 +38,7 @@ trait DefaultEvent
 
     public function add($request)
     {
+        if($this->origin_type!=='model') return message(false,'未定义【add】事件');
         DB::beginTransaction();
         $model = $this->model();
         $this->getHeader()->each(function ($item) use (&$model, $request) {
@@ -65,6 +66,7 @@ trait DefaultEvent
 
     public function edit($request)
     {
+        if($this->origin_type!=='model') return message(false,'未定义【edit】事件');
         DB::beginTransaction();
         $model = $this->model();
         $primary = $model->getKeyName();
@@ -96,6 +98,7 @@ trait DefaultEvent
 
     public function delete($request)
     {
+        if($this->origin_type!=='model') return message(false,'未定义【delete】事件');
         DB::beginTransaction();
         $model = $this->model();
         $primary = $model->getKeyName();
@@ -126,6 +129,7 @@ trait DefaultEvent
 
     public function forceDelete($request)
     {
+        if($this->origin_type!=='model') return message(false,'未定义【forceDelete】事件');
         $model = $this->model();
         if (!method_exists($model, 'forceDelete')) return message(false);
         DB::beginTransaction();
@@ -158,6 +162,7 @@ trait DefaultEvent
 
     public function restore($request)
     {
+        if($this->origin_type!=='model') return message(false,'未定义【restore】事件');
         $model = $this->model();
         if (!method_exists($model, 'restore')) return message(false);
         DB::beginTransaction();
