@@ -40,9 +40,10 @@
  [XBlock for Java：xblock-java (待开发)](https://github.com/yysel/xblock-java)
  
  ### 前端框架：
+ 
  [react核心包：xblock-react](https://github.com/yysel/xblock-react)
  
- [vue核心包：xblock-react](https://github.com/yysel/xblock-vue)
+ [vue核心包：xblock-vue (待开发)](https://github.com/yysel/xblock-vue)
  
 ![Image](http://doc.mylaravel.cn/qrcode.jpg)
 
