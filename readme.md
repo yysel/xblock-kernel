@@ -33,11 +33,11 @@
  
  [XBlock辅助工具包：xblock-helper](https://github.com/yysel/xblock-helper)
  
- [XBlock for Python：xblock-nodejs (待开发)](https://github.com/yysel/xblock-nodejs)
+ [XBlock for NodeJs：xblock-nodejs (待开发)](https://github.com/yysel/xblock-nodejs)
  
  [XBlock for Python：xblock-python (开发中)](https://github.com/yysel/xblock-python)
  
- [XBlock for Python：xblock-java (待开发)](https://github.com/yysel/xblock-java)
+ [XBlock for Java：xblock-java (待开发)](https://github.com/yysel/xblock-java)
  
  ### 前端框架：
  [react核心包：xblock-react](https://github.com/yysel/xblock-react)
