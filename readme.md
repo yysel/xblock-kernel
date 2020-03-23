@@ -25,6 +25,6 @@
 ## 参与贡献
 
 欢迎加入到 XBlock 的建设队伍中来，请访问 https://github.com/yysel/xblock-kernel。
-![Image](https://s2.ax1x.com/2020/03/07/3XaIqP.jpg)
+![Image](http://doc.mylaravel.cn/qrcode.jpg)
 
 
