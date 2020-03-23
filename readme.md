@@ -24,7 +24,26 @@
 
 ## 参与贡献
 
-欢迎加入到 XBlock 的建设队伍中来，请访问 https://github.com/yysel/xblock-kernel。
+ 欢迎加入到 XBlock 的建设队伍中来。
+
+### 后端框架：
+ [lumen核心包：xblock-kernel](https://github.com/yysel/xblock-kernel)
+ 
+ [轻量级api认证组件：xblock-auth](https://github.com/yysel/xblock-auth)
+ 
+ [XBlock辅助工具包：xblock-helper](https://github.com/yysel/xblock-helper)
+ 
+ [XBlock for Python：xblock-nodejs (待开发)](https://github.com/yysel/xblock-nodejs)
+ 
+ [XBlock for Python：xblock-python (开发中)](https://github.com/yysel/xblock-python)
+ 
+ [XBlock for Python：xblock-java (待开发)](https://github.com/yysel/xblock-java)
+ 
+ ### 前端框架：
+ [react核心包：xblock-react](https://github.com/yysel/xblock-react)
+ 
+ [vue核心包：xblock-react](https://github.com/yysel/xblock-vue)
+ 
 ![Image](http://doc.mylaravel.cn/qrcode.jpg)
 
 
