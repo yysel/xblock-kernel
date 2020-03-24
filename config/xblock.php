@@ -15,7 +15,7 @@ return [
     ],
 
     /**
-     * 注册系统菜单的类
+     * 配置系统注册类
      */
     'register' => [
         'menu' => \XBlock\Kernel\MenuRegister::class,
@@ -24,6 +24,12 @@ return [
         'dict' => null
     ],
 
+    /**
+     * 权限模块相关配置
+     */
+    'access' => [
+
+    ],
     /**
      * 内置路由前缀
      */

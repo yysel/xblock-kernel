@@ -27,6 +27,7 @@ class ModelFetch extends Fetch
     public function getBuilder()
     {
         $builder = new $this->block->origin;
+        $this->block->primary_key = $builder->getKeyName();
         return $builder;
     }
 

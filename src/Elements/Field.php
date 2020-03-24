@@ -34,6 +34,11 @@ class Field
         return Text::make('uuid', 'UUID')->invisible()->disExportable()->disImportable();
     }
 
+    static public function key($key = 'id'): Text
+    {
+        return Text::make($key, strtoupper($key))->invisible()->disExportable()->disImportable();
+    }
+
     static public function text($index, $title = null): Text
     {
         return Text::make($index, $title);

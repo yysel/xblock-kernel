@@ -58,6 +58,8 @@ class Block
     public $edit_except = [];
     public $edit_include = [];
 
+    public $primary_key = 'id';
+
     public $header;
 
     public $button;
@@ -145,6 +147,7 @@ class Block
             'sorting' => $this->fetch->sorting,
             'pagination' => $this->fetch->getPagination(),
             'recyclable' => $this->recyclable,
+            'primary_key' => $this->primary_key,
         ];
     }
 
