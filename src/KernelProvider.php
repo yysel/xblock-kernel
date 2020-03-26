@@ -3,6 +3,7 @@
 namespace XBlock\Kernel;
 
 use Illuminate\Support\ServiceProvider;
+use XBlock\Access\Service;
 
 class KernelProvider extends ServiceProvider
 {
@@ -16,7 +17,7 @@ class KernelProvider extends ServiceProvider
 
     public function register()
     {
-        $this->registerMigrations();
+        if ($this->app->runningInConsole()) $this->registerMigrations();
         $this->app->singleton('field_dict', function () {
             $register = config('xblock.register.dict', false);
             return $register ? new $register : null;
@@ -25,6 +26,7 @@ class KernelProvider extends ServiceProvider
 
     protected function registerMigrations()
     {
+        Service::loadMigrartion();
         return $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
     }
 

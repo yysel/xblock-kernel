@@ -9,10 +9,12 @@
 namespace XBlock\Kernel\Blocks;
 
 
+use Maatwebsite\Excel\ExcelServiceProvider;
 use Maatwebsite\Excel\Facades\Excel;
 use XBlock\Helper\Response\ErrorCode;
 use DB;
 use XBlock\Kernel\Services\BlockExport;
+use XBlock\Kernel\Services\RunTimeService;
 
 trait DefaultEvent
 {
@@ -38,7 +40,7 @@ trait DefaultEvent
 
     public function add($request)
     {
-        if($this->origin_type!=='model') return message(false,'未定义【add】事件');
+        if ($this->origin_type !== 'model') return message(false, '未定义【add】事件');
         DB::beginTransaction();
         $model = $this->model();
         $this->getHeader()->each(function ($item) use (&$model, $request) {
@@ -66,7 +68,7 @@ trait DefaultEvent
 
     public function edit($request)
     {
-        if($this->origin_type!=='model') return message(false,'未定义【edit】事件');
+        if ($this->origin_type !== 'model') return message(false, '未定义【edit】事件');
         DB::beginTransaction();
         $model = $this->model();
         $primary = $model->getKeyName();
@@ -98,7 +100,7 @@ trait DefaultEvent
 
     public function delete($request)
     {
-        if($this->origin_type!=='model') return message(false,'未定义【delete】事件');
+        if ($this->origin_type !== 'model') return message(false, '未定义【delete】事件');
         DB::beginTransaction();
         $model = $this->model();
         $primary = $model->getKeyName();
@@ -129,7 +131,7 @@ trait DefaultEvent
 
     public function forceDelete($request)
     {
-        if($this->origin_type!=='model') return message(false,'未定义【forceDelete】事件');
+        if ($this->origin_type !== 'model') return message(false, '未定义【forceDelete】事件');
         $model = $this->model();
         if (!method_exists($model, 'forceDelete')) return message(false);
         DB::beginTransaction();
@@ -162,7 +164,7 @@ trait DefaultEvent
 
     public function restore($request)
     {
-        if($this->origin_type!=='model') return message(false,'未定义【restore】事件');
+        if ($this->origin_type !== 'model') return message(false, '未定义【restore】事件');
         $model = $this->model();
         if (!method_exists($model, 'restore')) return message(false);
         DB::beginTransaction();
@@ -195,13 +197,14 @@ trait DefaultEvent
 
     public function export()
     {
+        RunTimeService::openProvider(ExcelServiceProvider::class);
         $time = date('Y-m-d');
         return Excel::download(new BlockExport($this), request('filename', "{$this->title}[{$time}]") . ".xlsx");
     }
 
     public function import()
     {
-
+        RunTimeService::openProvider(ExcelServiceProvider::class);
     }
 
     final protected function handleChangeHook($key, &$model, $request)
