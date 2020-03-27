@@ -22,9 +22,9 @@ class BlockController
 {
     protected $service;
 
-    public function __construct()
+    public function __construct(BlockService $service)
     {
-        $this->service = new  BlockService();
+        $this->service = $service;
     }
 
     public function action($block, $action, Request $request)
