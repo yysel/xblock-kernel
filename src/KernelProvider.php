@@ -4,6 +4,7 @@ namespace XBlock\Kernel;
 
 use Illuminate\Support\ServiceProvider;
 use XBlock\Access\Service;
+use XBlock\Kernel\Elements\Menu;
 
 class KernelProvider extends ServiceProvider
 {
@@ -36,8 +37,10 @@ class KernelProvider extends ServiceProvider
             'prefix' => config('xblock.prefix', 'api/xblock'),
             'namespace' => 'XBlock\Kernel', 'middleware' => config('xblock.middleware', 'auth:api')
         ], function ($router) {
-            $router->post('/menu', 'KernelController@menu');
-            $router->post('/notification', 'KernelController@notification');
+            $router->post('/menu', function (){
+                $menu = Menu::getMenuTree(true);
+                return message(true)->data($menu);
+            });
             $router->post('/{block}/{action}', 'BlockController@action');
         });
     }

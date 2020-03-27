@@ -18,8 +18,4 @@ class KernelController
         return message(true)->data($menu);
     }
 
-    public function notification()
-    {
-        return message(true)->data([]);
-    }
 }
