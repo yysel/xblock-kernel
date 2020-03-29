@@ -38,9 +38,9 @@ class BaseButton extends Element
     protected $visible = true;
 
 
-    public function component($type): BaseButton
+    public function component($component): BaseButton
     {
-        $this->component = $type;
+        $this->component = $component;
         return $this;
     }
 
@@ -86,7 +86,7 @@ class BaseButton extends Element
         return $this;
     }
 
-    public function visible($visible): BaseButton
+    public function visible($visible = true): BaseButton
     {
         $this->visible = $visible;
         return $this;

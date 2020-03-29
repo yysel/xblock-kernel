@@ -68,6 +68,7 @@ class Block
 
     protected $driver = 'class';
 
+    private $close_log_list = [];
 
     use  DefaultEvent;
 
@@ -250,6 +251,23 @@ class Block
         $client_type = request()->header('client_type');
         if ($type) return $type === $client_type;
         return $client_type;
+    }
+
+    final protected function closeLog($action = null)
+    {
+        if (!$action) {
+            $trace = debug_backtrace()[1];
+            $action = $trace['function'];
+        }
+        if (is_array($action)) array_merge($this->close_log_list, $action);
+        else $this->close_log_list[] = $action;
+        return $this;
+    }
+
+
+    final  public function checkCloseLog($action)
+    {
+        return in_array($action, $this->close_log_list);
     }
 
 

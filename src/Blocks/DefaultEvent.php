@@ -19,6 +19,12 @@ use XBlock\Kernel\Services\RunTimeService;
 trait DefaultEvent
 {
 
+    public function list()
+    {
+        $this->closeLog('list');
+        return message(true)->silence()->data($this->get());
+    }
+
     public function contents()
     {
         $this->getHeader();

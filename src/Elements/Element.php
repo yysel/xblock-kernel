@@ -49,6 +49,11 @@ class Element implements JsonSerializable
         return $this->$key;
     }
 
+    public function __set($key, $value)
+    {
+        return $this->$key = $value;
+    }
+
     public function when($bool, Closure $func, Closure $func2 = null)
     {
         if ($bool) return $func($this);

@@ -49,4 +49,9 @@ class GlobalHookRegister
     {
 
     }
+
+    public function eventLog()
+    {
+
+    }
 }
