@@ -184,6 +184,12 @@ class BaseField extends Element
         return $this;
     }
 
+    public function setProperty($key, $value)
+    {
+        $this->property[$key] = $value;
+        return $this;
+    }
+
 
     protected function toJson(): array
     {

@@ -118,5 +118,10 @@ class Field
         return CascadeCheckBox::make($index, $title);
     }
 
+    static public function make($input, $index, $title): BaseField
+    {
+        return BaseField::fill(compact('input', 'index', 'title'));
+    }
+
 
 }
