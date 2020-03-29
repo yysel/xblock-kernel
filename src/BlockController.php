@@ -101,7 +101,10 @@ class BlockController
     {
         $class_name = null;
         //todo 添加缓存
-        if (!$class_name) $class_name = $this->service->findBlockClassFormCache($this->block_index);
+        if (!$class_name) {
+            if (env('APP_ENV') === 'production') $class_name = $this->service->findBlockClassFormCache($this->block_index);
+            else $class_name = $this->service->findBlockClass($this->block_index);
+        }
         $block = ($class_name && class_exists($class_name)) ? (new $class_name($property)) : null;
         if ($block instanceof Block) {
             $block->index = $this->block_index;
