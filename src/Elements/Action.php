@@ -20,11 +20,6 @@ class Action extends Element
     protected $log_description;
 
 
-    public function permission(Permission $permission)
-    {
-        $this->permission = Permission::use($permission,'action');
-        return $this;
-    }
 
     public function index($index)
     {

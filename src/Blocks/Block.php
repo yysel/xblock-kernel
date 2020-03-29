@@ -70,6 +70,8 @@ class Block
 
     private $close_log_list = [];
 
+    protected $location;
+
     use  DefaultEvent;
 
     final public function __construct($data = [])
@@ -88,7 +90,8 @@ class Block
             $this->property = $component->getProperty();
         }
 
-        $this->fetch = $this->fetch();
+        $this->location = request()->header('location');
+        $this->fetch = $this->getFetch();
 
     }
 
@@ -117,7 +120,7 @@ class Block
         return [];
     }
 
-    public function recycleButton()
+    final public function recycleButton()
     {
         return [
             Button::small('restore', '恢复')->position('inner'),
@@ -156,7 +159,7 @@ class Block
      * 获取Fetch的实例化
      * @return Fetch
      */
-    final  private function fetch(): Fetch
+    final  private function getFetch(): Fetch
     {
         $type = ucfirst($this->origin_type);
         $fetch_class = "XBlock\Kernel\Fetch\\{$type}Fetch";
@@ -204,7 +207,7 @@ class Block
         if ($this->button) return $this->button;
         $location = request()->header('location');
         return $this->button = collect(array_merge($this->button(), $this->recycleButton()))->map(function ($item) use ($location) {
-            $item->permission = $item->permission ? $item->permission : str_replace('/detail/:relation_uuid', '', $location) . "-{$this->index}-{$item->index}";
+            $item->permission = $item->permission ? $item->permission : $this->createPermissionName($item->index);
             return $item;
         });
     }
@@ -213,7 +216,7 @@ class Block
     {
         $location = request()->header('location');
         return collect($this->event())->map(function ($item) use ($location) {
-            $item->permission = $item->permission ? $item->permission : str_replace('/detail/:relation_uuid', '', $location) . "-{$this->index}-{$item->index}";
+            $item->permission = $item->permission ? $item->permission : $this->createPermissionName($item->index);
             return $item;
         });
     }
@@ -268,6 +271,11 @@ class Block
     final  public function checkCloseLog($action)
     {
         return in_array($action, $this->close_log_list);
+    }
+
+    final private function createPermissionName($index)
+    {
+        return str_replace('/detail/:relation_uuid', '', $this->location) . "@{$this->index}@{$index}";
     }
 
 

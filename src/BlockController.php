@@ -21,65 +21,90 @@ class BlockController
 {
     protected $service;
 
-    public function __construct(BlockService $service)
+    protected $block;
+    protected $block_index;
+
+    protected $action;
+    protected $action_index;
+
+    public function __construct(BlockService $service, Request $request)
     {
         $this->service = $service;
+
+        $this->block_index = $request->block;
+
+        $this->action_index = $request->action;
+
+        $this->action = Tool::camelize($this->action_index);
+
+        $this->block = $this->getBlockObject();
     }
 
-    public function action($block, $action, Request $request)
+
+    private function validity()
     {
-        $blockObject = $this->getBlockObject($block);
-        if (!$blockObject) return message(false, '模块不存在！');
-        if (!($blockObject instanceof Block)) return message(false, '当前调用非Block');
-        $action = Tool::camelize($action);
-        if (method_exists($blockObject, $action)) {
-            $data = $blockObject->$action($request);
-            $log = !$blockObject->checkCloseLog($action);
+        if (!$this->block) return message(false, '模块不存在！');
+        if (!($this->block instanceof Block)) return message(false, '当前调用非Block');
+        if (!method_exists($this->block, $this->action)) return message(false, "{$this->block_index}中的【{$this->action_index}】事件未定！");
+        if (!$this->checkActionAccess()) return message(false, '没有调用该事件的权限！');
+        return true;
+    }
+
+    public function action(Request $request)
+    {
+        $validity = $this->validity();
+        if ($validity === true) {
+            $data = $this->block->{$this->action}($request);
+            $log = !$this->block->checkCloseLog($this->action);
             if ($data instanceof CodeResponse || $data instanceof Response) $response = $data;
             else  $response = message($data)->data($data);
-            if ($log) $this->actionLog($blockObject, $action, $response);
+            if ($log) $this->actionLog($response);
+            header('Content-Type: application/json');
             return $response;
         }
-        return message(false, "{$block}中的【{$action}】事件不存在！");
+        return $validity;
     }
 
-    protected function parseAction($event, $action)
+    protected function checkActionAccess()
     {
-        $event = $event->first(function ($item) use ($action) {
-            return $item instanceof Action && $item->index == $action;
+        if (user('is_admin')) return true;
+
+        $events = $this->block->getActionWithPermission();
+
+        $event = $events->first(function ($item) {
+            return $item instanceof Action && $item->index == $this->action_index;
         });
-        if (!$event) return null;
-        $location = request()->header('location');
-        $event->permission = $event->permission ? $event->permission : str_replace('/detail/:relation_uuid', '', $location);
-        if ($event && $event->permission && !(in_array($event->permission, user('permission', [])))) return false;
-        return $event;
+        if ($event) {
+            $location = request()->header('location');
+            $event->permission = $event->permission ? $event->permission : str_replace('/detail/:relation_uuid', '', $location);
+            if ($event && $event->permission && !(in_array($event->permission, user('permission', [])))) return false;
+        }
+        return true;
     }
 
-    protected function actionLog($block, $action, $response)
+    protected function actionLog($response)
     {
-        if (method_exists($block, 'eventLog')) $block->eventLog($block, $action, $response);
+        if (method_exists($this->block, 'eventLog')) $this->block->eventLog($this->block, $this->action, $response);
         else {
             $globalHookClass = config('xblock.register.hook', GlobalHookRegister::class);
             if (class_exists($globalHookClass)) {
                 $globalHook = new $globalHookClass;
                 if (method_exists($globalHook, 'eventLog')) {
-                    $globalHook->eventLog($block, $action, $response);
+                    $globalHook->eventLog($this->block, $this->action, $response);
                 }
             }
         }
     }
 
 
-    public function getBlockObject($index, $property = [])
+    public function getBlockObject($property = [])
     {
         $class_name = null;
         //todo 添加缓存
-        if (!$class_name) {
-            $class_name = $this->service->findBlockClass($index);
-        }
+        if (!$class_name) $class_name = $this->service->findBlockClassFormCache($this->block_index);
         $block = ($class_name && class_exists($class_name)) ? (new $class_name($property)) : null;
         if ($block instanceof Block) {
-            $block->index = $index;
+            $block->index = $this->block_index;
             return $block;
         }
         return null;

@@ -9,6 +9,7 @@
 namespace XBlock\Kernel\Services;
 
 
+use Illuminate\Support\Facades\Cache;
 use XBlock\Helper\Tool;
 
 class BlockService
@@ -17,6 +18,13 @@ class BlockService
     {
         $block_list = $this->findBlockClassList();
         return isset($block_list[$block_name]) ? $block_list[$block_name] : null;
+    }
+
+    public function findBlockClassFormCache($block_name)
+    {
+        return Cache::remember('block_class_name', 24 * 3600, function () use ($block_name) {
+            return $this->findBlockClass($block_name);
+        });
     }
 
     public function findBlockClassList()
@@ -49,7 +57,7 @@ class BlockService
         $block_path = config('xblock.block_path', [base_path('app/Blocks')]);
         $path_lists = [];
         foreach ($block_path as $path) {
-            if (strpos($path, '*') === false ) $path_lists[] = $path;
+            if (strpos($path, '*') === false) $path_lists[] = $path;
             else $path_lists = array_merge($path_lists, $this->scanFuzzyPath($path));
         }
         return $path_lists;
