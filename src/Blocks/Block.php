@@ -14,6 +14,7 @@ use XBlock\Kernel\Elements\Button;
 use XBlock\Kernel\Elements\Component;
 use XBlock\Kernel\Elements\Components\Base;
 use XBlock\Kernel\Elements\Fields\BaseField;
+use XBlock\Kernel\Events\DefaultEvent;
 use XBlock\Kernel\Fetch\Fetch;
 
 
@@ -124,7 +125,7 @@ class Block
     {
         return [
             Button::small('restore', '恢复')->position('inner'),
-            Button::small('force_delete', '彻底删除')->position('inner')->confirm()->color('#F85054'),
+            Button::small('force_delete', '清除')->position('inner')->confirm('清除后，数据不可再恢复！确定吗？')->color('#F85054'),
         ];
     }
 
@@ -223,7 +224,6 @@ class Block
 
     final protected function getButton()
     {
-        if ($this->button) return $this->button;
         return $this->button = collect($this->getButtonWithPermission())->filter(function ($item) {
             $deleted = $item->index == 'restore' || $item->index == 'force_delete';
             if (parameter('__deleted', false)) return $deleted && (user('is_admin') || in_array($item->permission, user('permission', [])));
@@ -275,7 +275,7 @@ class Block
 
     final private function createPermissionName($index)
     {
-        return str_replace('/detail/:relation_uuid', '', $this->location) . "@{$this->index}@{$index}";
+        return "{$this->index}@{$index}";
     }
 
 

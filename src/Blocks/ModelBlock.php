@@ -9,11 +9,15 @@
 namespace XBlock\Kernel\Blocks;
 
 
+use XBlock\Kernel\Events\ModelDefaultEvent;
+
 class ModelBlock extends Block
 {
     public $origin_type = 'model';
 
     public $origin = 'content';
+
+    use ModelDefaultEvent;
 
 
 }

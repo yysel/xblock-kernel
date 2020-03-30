@@ -137,7 +137,7 @@ class Menu
                 'visible' => $item->visible,
                 'icon' => $item->icon,
                 'block' => (user('is_admin') || !$auth) ? $item->block : array_filter((array)$item->block, function ($it) use ($item) {
-                    return in_array(str_replace('/detail/:relation_uuid', '', $item->path) . '-' . $it . '-list', user('permission', []));
+                    return in_array( $it . '@list', user('permission', []));
                 }),
                 'children' => $item->getChildren($list, $auth),
             ];
@@ -163,7 +163,7 @@ class Menu
                 'visible' => $item->visible,
                 'icon' => $item->icon,
                 'block' => (user('is_admin') || !$auth) ? $item->block : array_filter((array)$item->block, function ($it) use ($item) {
-                    return in_array(str_replace('/detail/:relation_uuid', '', $item->path) . '-' . $it . '-list', user('permission', []));
+                    return in_array( $it . '@list', user('permission', []));
                 }),
                 'children' => $item->getChildren($menu_list, $auth),
             ];

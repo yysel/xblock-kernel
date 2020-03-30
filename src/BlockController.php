@@ -15,6 +15,7 @@ use XBlock\Helper\Tool;
 use XBlock\Kernel\Blocks\Block;
 use XBlock\Kernel\Elements\Action;
 use XBlock\Helper\Response\CodeResponse;
+use XBlock\Kernel\Elements\Buttons\BaseButton;
 use XBlock\Kernel\Services\BlockService;
 
 class BlockController
@@ -46,7 +47,10 @@ class BlockController
         if (!$this->block) return message(false, '模块不存在！');
         if (!($this->block instanceof Block)) return message(false, '当前调用非Block');
         if (!method_exists($this->block, $this->action)) return message(false, "{$this->block_index}中的【{$this->action_index}】事件未定！");
-        if (!$this->checkActionAccess()) return message(false, '没有调用该事件的权限！');
+        if (!user('is_admin')) {
+            if (!$this->checkActionAccess()) return message(false, '您没有该事件的权限！');
+            if (!$this->checkButtonAccess()) return message(false, '您没有该操作的权限！');
+        }
         return true;
     }
 
@@ -59,7 +63,6 @@ class BlockController
             if ($data instanceof CodeResponse || $data instanceof Response) $response = $data;
             else  $response = message($data)->data($data);
             if ($log) $this->actionLog($response);
-            header('Content-Type: application/json');
             return $response;
         }
         return $validity;
@@ -67,17 +70,26 @@ class BlockController
 
     protected function checkActionAccess()
     {
-        if (user('is_admin')) return true;
-
+        if ($this->action_index === 'list') return in_array($this->block_index . '@' . 'list', user('permission', []));
         $events = $this->block->getActionWithPermission();
 
         $event = $events->first(function ($item) {
             return $item instanceof Action && $item->index == $this->action_index;
         });
         if ($event) {
-            $location = request()->header('location');
-            $event->permission = $event->permission ? $event->permission : str_replace('/detail/:relation_uuid', '', $location);
             if ($event && $event->permission && !(in_array($event->permission, user('permission', [])))) return false;
+        }
+        return true;
+    }
+
+    public function checkButtonAccess()
+    {
+        $buttons = $this->block->getButtonWithPermission();
+        $button = $buttons->first(function ($item) {
+            return $item instanceof BaseButton && $item->index == $this->action_index;
+        });
+        if ($button) {
+            if ($button && $button->permission && !(in_array($button->permission, user('permission', [])))) return false;
         }
         return true;
     }
