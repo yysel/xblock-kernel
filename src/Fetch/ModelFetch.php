@@ -33,11 +33,11 @@ class ModelFetch extends Fetch
 
     protected function requestWhere()
     {
-        $header = collect($this->block->header);
+        $fields = collect($this->block->fields);
         foreach ($this->parameter as $key => $value) {
             if ($key == $this->block->tab_key && in_array($this->block->tab_key, $this->block->where_except)) continue;
             if ($value == '__ALL__' || $value === null) continue;
-            if ($field = $header->first(function ($item) use ($key) {
+            if ($field = $fields->first(function ($item) use ($key) {
                 return $item->index == $key && ($item->filterable || $key == $this->block->tab_key);
             })) {
                 if ($field->relation) {

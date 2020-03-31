@@ -6,12 +6,12 @@
  * Time: 下午3:50
  */
 
-namespace XBlock\Kernel\Elements\Buttons;
+namespace XBlock\Kernel\Elements\Actions;
 
 
 use XBlock\Kernel\Elements\Button;
 
-class SolidIcon extends BaseButton
+class SolidIcon extends BaseAction
 {
     protected $component = 'solid_icon';
     protected $position = Button::INNER;

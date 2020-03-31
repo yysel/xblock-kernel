@@ -10,9 +10,12 @@ namespace XBlock\Kernel\Blocks;
 
 use Illuminate\Support\Collection;
 use XBlock\Helper\Tool;
+use XBlock\Kernel\Elements\Action;
+use XBlock\Kernel\Elements\ActionCreator;
 use XBlock\Kernel\Elements\Button;
 use XBlock\Kernel\Elements\Component;
 use XBlock\Kernel\Elements\Components\Base;
+use XBlock\Kernel\Elements\FieldCreator;
 use XBlock\Kernel\Elements\Fields\BaseField;
 use XBlock\Kernel\Events\DefaultEvent;
 use XBlock\Kernel\Fetch\Fetch;
@@ -61,9 +64,11 @@ class Block
 
     public $primary_key = 'id';
 
-    public $header;
+    public $fields;
 
-    public $button;
+    public $actions;
+
+    public $events;
 
     protected $content = [];
 
@@ -128,11 +133,11 @@ class Block
         return [];
     }
 
-    final public function recycleButton()
+    final protected function recycleButton()
     {
         return [
-            Button::small('restore', '恢复')->position('inner'),
-            Button::small('force_delete', '清除')->position('inner')->confirm('清除后，数据不可再恢复！确定吗？')->color('#F85054'),
+            Action::small('restore', '恢复')->position('inner'),
+            Action::small('force_delete', '清除')->position('inner')->confirm('清除后，数据不可再恢复！确定吗？')->color('#F85054'),
         ];
     }
 
@@ -152,8 +157,8 @@ class Block
             'tab_key' => $this->tab_key,
             'width' => $this->width,
             'height' => $this->height,
-            'header' => $this->getHeader(),
-            'button' => $this->getButton(),
+            'header' => $this->getFields(),
+            'button' => $this->getActions(),
             'content' => $this->getContent(),
             'parameter' => $this->fetch->parameter,
             'sorting' => $this->fetch->sorting,
@@ -197,13 +202,6 @@ class Block
         return $model;
     }
 
-    final public function getHeader(): Collection
-    {
-        if ($this->header) return collect($this->header);
-        return $this->header = collect($this->header())->filter(function ($item) {
-            return $item instanceof BaseField;
-        })->values();
-    }
 
     final public function getContent()
     {
@@ -213,9 +211,8 @@ class Block
 
     final public function getButtonWithPermission()
     {
-        if ($this->button) return $this->button;
-        $location = request()->header('location');
-        return $this->button = collect(array_merge($this->button(), $this->recycleButton()))->map(function ($item) use ($location) {
+        if ($this->actions) return $this->actions;
+        return $this->actions = collect(array_merge($this->button(), $this->recycleButton()))->map(function ($item) {
             $item->permission = $item->permission ? $item->permission : $this->createPermissionName($item->index);
             return $item;
         });
@@ -230,13 +227,50 @@ class Block
         });
     }
 
-    final protected function getButton()
+    final public function getFields(): Collection
     {
-        return $this->button = collect($this->getButtonWithPermission())->filter(function ($item) {
-            $deleted = $item->index == 'restore' || $item->index == 'force_delete';
-            if (parameter('__deleted', false)) return $deleted && (user('is_admin') || in_array($item->permission, user('permission', [])));
-            return (user('is_admin') || in_array($item->permission, user('permission', []))) && !$deleted;
-        })->values();
+        if ($this->fields) return collect($this->fields);
+        if (method_exists($this, 'fields')) {
+            $creator = new FieldCreator($this);
+            $this->fields($creator);
+            return $this->fields = collect($this->fields);
+        } else {
+            return $this->fields = collect($this->header())->filter(function ($item) {
+                return $item instanceof BaseField;
+            })->values();
+        }
+    }
+
+    final public function getAllActions()
+    {
+
+
+    }
+
+    final public function getAllFields()
+    {
+
+    }
+
+    final protected function getActions()
+    {
+        if ($this->actions) return $this->actions;
+        if (method_exists($this, 'actions')) {
+            $creator = new ActionCreator($this);
+            if (parameter('__deleted', false)) {
+                return $this->actions = $this->recycleButton();
+            } else {
+                $this->actions($creator);
+                return $this->actions;
+            }
+        } else {
+            return $this->actions = collect($this->getButtonWithPermission())->filter(function ($item) {
+                $deleted = $item->index == 'restore' || $item->index == 'force_delete';
+                if (parameter('__deleted', false)) return $deleted && (user('is_admin') || in_array($item->permission, user('permission', [])));
+                return (user('is_admin') || in_array($item->permission, user('permission', []))) && !$deleted;
+            })->values();
+        }
+
     }
 
     /** 取出或者判断传入值与前端调用的路径是否一致

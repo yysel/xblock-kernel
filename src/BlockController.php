@@ -13,9 +13,9 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use XBlock\Helper\Tool;
 use XBlock\Kernel\Blocks\Block;
-use XBlock\Kernel\Elements\Action;
+use XBlock\Kernel\Elements\Event;
 use XBlock\Helper\Response\CodeResponse;
-use XBlock\Kernel\Elements\Buttons\BaseButton;
+use XBlock\Kernel\Elements\Buttons\BaseAction;
 use XBlock\Kernel\Services\BlockService;
 
 class BlockController
@@ -76,7 +76,7 @@ class BlockController
         $events = $this->block->getActionWithPermission();
 
         $event = $events->first(function ($item) {
-            return $item instanceof Action && $item->index == $this->action_index;
+            return $item instanceof Event && $item->index == $this->action_index;
         });
         if ($event) {
             if ($event && $event->permission && !(in_array($event->permission, user('permission', [])))) return false;
@@ -88,7 +88,7 @@ class BlockController
     {
         $buttons = $this->block->getButtonWithPermission();
         $button = $buttons->first(function ($item) {
-            return $item instanceof BaseButton && $item->index == $this->action_index;
+            return $item instanceof BaseAction && $item->index == $this->action_index;
         });
         if ($button) {
             if ($button && $button->permission && !(in_array($button->permission, user('permission', [])))) return false;

@@ -23,16 +23,16 @@ class BlockImport implements ToArray, WithHeadingRow, WithMultipleSheets, WithCh
 {
     protected $block;
 
-    protected $header; //拥有字典的字段
+    protected $header = []; //拥有字典的字段
 
-    protected $headers;
+    protected $headers = [];
 
     protected $result;
 
     public function __construct(Block $block)
     {
         $header = [];
-        $block->getHeader()->map(function ($item) use (&$header) {
+        $block->getFields()->map(function ($item) use (&$header) {
             if ($item->importable) {
                 $header[$item->title] = $item;
                 $this->header[$item->index] = $item;

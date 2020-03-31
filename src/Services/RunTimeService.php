@@ -17,4 +17,10 @@ class RunTimeService
         $ser->boot();
         $ser->register();
     }
+
+    static public function getRoleModel($new = false)
+    {
+        $model = config('xblock.access.role', 'XBlock\Access\Models\Role');
+        return $new ? new $model : $model;
+    }
 }

@@ -3,16 +3,18 @@
  * Created by PhpStorm.
  * User: jim
  * Date: 19-11-30
- * Time: 下午3:53
+ * Time: 下午3:46
  */
 
-namespace XBlock\Kernel\Elements\Buttons;
+namespace XBlock\Kernel\Elements\Actions;
 
 
 use XBlock\Kernel\Elements\Button;
 
-class SwitchButton extends BaseButton
+class Small extends BaseAction
 {
-    protected $component = 'switch';
+    protected $component = 'small';
+
     protected $position = Button::INNER;
+
 }

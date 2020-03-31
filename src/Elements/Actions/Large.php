@@ -6,12 +6,12 @@
  * Time: 下午3:46
  */
 
-namespace XBlock\Kernel\Elements\Buttons;
+namespace XBlock\Kernel\Elements\Actions;
 
 
 use XBlock\Kernel\Elements\Button;
 
-class Large extends BaseButton
+class Large extends BaseAction
 {
     protected $component = 'large';
     protected $position = Button::TOP;

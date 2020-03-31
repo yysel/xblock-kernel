@@ -81,7 +81,7 @@ abstract class Fetch
         if ($sortable && $sorts) {
 
             foreach ($sorts as $field => $order) {
-                if ($this->block->header->first(function ($item) use ($field) {
+                if ($this->block->fields->first(function ($item) use ($field) {
                     return $item->sortable && $item->index === $field;
                 })) $this->sorting[$field] = in_array($order, ['desc', 'asc']) ? $order : 'asc';
             }
@@ -108,11 +108,11 @@ abstract class Fetch
         $default_value = parameter($tab_key, null);
         if ($tab_key) {
             if ($default_value === null) {
-                $header = $this->block->header->first(function ($item) use ($tab_key) {
+                $header = $this->block->fields->first(function ($item) use ($tab_key) {
                     return $item->index == $tab_key;
                 });
-                if ($header && $header->dict) {
-                    $first_item = $header->dict[0];
+                if ($header && $fields->dict) {
+                    $first_item = $fields->dict[0];
                     $default_value = isset($first_item['value']) ? $first_item['value'] : null;
                 }
             }
@@ -132,9 +132,9 @@ abstract class Fetch
         else $transform = $this->block->transform;
         $this->builder = $this->builder->map(function ($item) use ($transform) {
             if (is_array($item)) $item = (object)$item;
-            if ($this->block->header) {
+            if ($this->block->fields) {
                 $temp_restult = [];
-                foreach ($this->block->header as $field) {
+                foreach ($this->block->fields as $field) {
                     $index = $field->index;
                     $value = isset($item->{$index}) ? $item->{$index} : null;
                     if ($field->relation) $value = $this->getRelationModelValue($item, $field->relation, $value);

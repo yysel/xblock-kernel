@@ -6,12 +6,12 @@
  * Time: 上午12:23
  */
 
-namespace XBlock\Kernel\Elements\Buttons;
+namespace XBlock\Kernel\Elements\Actions;
 
 
 use XBlock\Kernel\Elements\Element;
 
-class BaseButton extends Element
+class BaseAction extends Element
 {
     protected $index;
 
@@ -38,61 +38,61 @@ class BaseButton extends Element
     protected $visible = true;
 
 
-    public function component($component): BaseButton
+    public function component($component): BaseAction
     {
         $this->component = $component;
         return $this;
     }
 
-    public function link($link): BaseButton
+    public function link($link): BaseAction
     {
         $this->link = $link;
         return $this;
     }
 
-    public function icon($icon): BaseButton
+    public function icon($icon): BaseAction
     {
         $this->icon = $icon;
         return $this;
     }
 
-    public function permission($permission): BaseButton
+    public function permission($permission): BaseAction
     {
         $this->permission = $permission;
         return $this;
     }
 
-    public function position($position): BaseButton
+    public function position($position): BaseAction
     {
         $this->position = $position;
         return $this;
     }
 
-    public function inner(): BaseButton
+    public function inner(): BaseAction
     {
         $this->position = 'inner';
         return $this;
     }
 
-    public function top(): BaseButton
+    public function top(): BaseAction
     {
         $this->position = 'top';
         return $this;
     }
 
-    public function color($color): BaseButton
+    public function color($color): BaseAction
     {
         $this->color = $color;
         return $this;
     }
 
-    public function visible($visible = true): BaseButton
+    public function visible($visible = true): BaseAction
     {
         $this->visible = $visible;
         return $this;
     }
 
-    public function confirm($description = null, $confirm = true): BaseButton
+    public function confirm($description = null, $confirm = true): BaseAction
     {
         $this->confirm = $confirm;
         $this->confirm_description = $description;

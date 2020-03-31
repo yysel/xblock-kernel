@@ -6,13 +6,13 @@
  * Time: 下午3:53
  */
 
-namespace XBlock\Kernel\Elements\Buttons;
+namespace XBlock\Kernel\Elements\Actions;
 
 
 use XBlock\Kernel\Elements\Button;
 
-class SwitchIcon extends BaseButton
+class SwitchButton extends BaseAction
 {
-    protected $component = 'switch_icon';
+    protected $component = 'switch';
     protected $position = Button::INNER;
 }

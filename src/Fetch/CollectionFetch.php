@@ -33,11 +33,11 @@ class CollectionFetch extends Fetch
 
     public function requestWhere()
     {
-        $header = collect($this->block->header);
+        $fields = collect($this->block->fields);
         foreach ($this->parameter as $key => $value) {
             if ($value == '__ALL__' || $value === null) continue;
             if ($key == $this->block->tab_key && in_array($this->block->tab_key, $this->block->where_except)) continue;
-            if ($filed = $header->first(function ($item) use ($key) {
+            if ($filed = $fields->first(function ($item) use ($key) {
                 return $item->index == $key && $item->filterable;
             })) {
                 $this->builder = $filed->whereCollection($this->builder, $value);

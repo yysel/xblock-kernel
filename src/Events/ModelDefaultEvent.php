@@ -25,7 +25,7 @@ trait ModelDefaultEvent
         if ($this->origin_type !== 'model') return message(false, '未定义【add】事件');
         DB::beginTransaction();
         $model = $this->model();
-        $this->getHeader()->each(function ($item) use (&$model, $request) {
+        $this->getFields()->each(function ($item) use (&$model, $request) {
             if ((($item->addable && !in_array($item->index, $this->add_except)) || in_array($item->index, $this->add_include)) && $request->has($item->index)) {
                 $model->{$item->index} = $request->input($item->index);
             }
@@ -60,7 +60,7 @@ trait ModelDefaultEvent
             DB::rollBack();
             return message(false, '该数据不存在！');
         }
-        $this->getHeader()->each(function ($item) use (&$model, $request) {
+        $this->getFields()->each(function ($item) use (&$model, $request) {
             if ((($item->editable && !in_array($item->index, $this->edit_except)) || in_array($item->index, $this->edit_include)) && $request->has($item->index)) {
                 $model->{$item->index} = $request->input($item->index);
             }
