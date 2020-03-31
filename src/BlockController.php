@@ -70,7 +70,9 @@ class BlockController
 
     protected function checkActionAccess()
     {
-        if ($this->action_index === 'list') return in_array($this->block_index . '@' . 'list', user('permission', []));
+
+        if ($this->action_index === 'list' && $this->block->auth) return in_array($this->block_index . '@' . 'list', user('permission', []));
+
         $events = $this->block->getActionWithPermission();
 
         $event = $events->first(function ($item) {

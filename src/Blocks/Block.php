@@ -65,6 +65,8 @@ class Block
 
     public $button;
 
+    protected $content = [];
+
     protected $fetch;
 
     protected $driver = 'class';
@@ -72,6 +74,10 @@ class Block
     private $close_log_list = [];
 
     protected $location;
+
+    public $auth = true;
+
+    private $permission;
 
     use  DefaultEvent;
 
@@ -84,6 +90,7 @@ class Block
         if (!$this->index) {
             $class = get_class($this);
             $this->index = Tool::unpascal(last(explode('\\', $class)));
+            if ($this->auth) $this->permission = $this->index . '@list';
         }
         $component = $this->component();
         if ($component instanceof Base) {
@@ -133,7 +140,7 @@ class Block
     /** 获取Block的返回值
      * @return array
      */
-    final  public function get(): array
+    final  public function query(): array
     {
         return [
             'index' => $this->index,
@@ -192,7 +199,7 @@ class Block
 
     final public function getHeader(): Collection
     {
-        if ($this->header) return $this->header;
+        if ($this->header) return collect($this->header);
         return $this->header = collect($this->header())->filter(function ($item) {
             return $item instanceof BaseField;
         })->values();
@@ -200,6 +207,7 @@ class Block
 
     final public function getContent()
     {
+        if ($this->content) return $this->content;
         return $this->fetch->init();
     }
 

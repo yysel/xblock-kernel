@@ -117,7 +117,7 @@ class Menu
 
     }
 
-    public function children($func)
+    public function children(\Closure $func)
     {
         $func($this);
         $this->block = [];

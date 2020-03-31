@@ -11,7 +11,6 @@ namespace XBlock\Kernel\Events;
 
 use Maatwebsite\Excel\ExcelServiceProvider;
 use Maatwebsite\Excel\Facades\Excel;
-use XBlock\Helper\Response\ErrorCode;
 use XBlock\Kernel\Services\BlockExport;
 use XBlock\Kernel\Services\RunTimeService;
 
@@ -21,7 +20,7 @@ trait DefaultEvent
     public function list()
     {
         $this->closeLog('list');
-        return message(true)->silence()->data($this->get());
+        return message(true)->silence()->data($this->query());
     }
 
     public function contents()
@@ -50,10 +49,6 @@ trait DefaultEvent
         return Excel::download(new BlockExport($this), request('filename', "{$this->title}[{$time}]") . ".xlsx");
     }
 
-    public function import()
-    {
-        RunTimeService::openProvider(ExcelServiceProvider::class);
-    }
 
 
 

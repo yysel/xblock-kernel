@@ -8,8 +8,13 @@
 
 namespace XBlock\Kernel\Events;
 
+use Maatwebsite\Excel\ExcelServiceProvider;
+use Maatwebsite\Excel\Facades\Excel;
 use XBlock\Helper\Response\ErrorCode;
 use Illuminate\Support\Facades\DB;
+use XBlock\Kernel\Services\BlockImport;
+use XBlock\Kernel\Services\ImportResult;
+use XBlock\Kernel\Services\RunTimeService;
 
 
 trait ModelDefaultEvent
@@ -170,6 +175,30 @@ trait ModelDefaultEvent
         }
         DB::rollBack();
         return message(false, '数据恢复失败！');
+    }
+
+
+    public function import()
+    {
+        RunTimeService::openProvider(ExcelServiceProvider::class);
+        $file = request()->file('file');
+        if (!$file) return modal(false)->info('没有找到要上传的文件！');
+        $ext = $file->getClientOriginalExtension();
+        if (!in_array($ext, ['xlsx', 'xls'])) return modal(false)->info('上传的文件格式不正确！');
+        $importer = new BlockImport($this);
+        Excel::import($importer, $file);
+        $error_line = $importer->getError();
+        $success = $importer->getSuccess()->count();
+        if ($importer->getError()->count()) {
+            $block = new ImportResult();
+            $block->setContent($error_line);
+            $block->setHeader($importer->getHeaders());
+            return message(false)->data([
+                'success' => $success,
+                'error' => $error_line->count(),
+                'block' => $block->query()
+            ]);
+        } else return modal(true)->data($success);
     }
 
 

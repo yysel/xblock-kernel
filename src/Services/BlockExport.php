@@ -15,22 +15,25 @@ use XBlock\Kernel\Blocks\Block;
 
 class BlockExport implements FromCollection, WithHeadings
 {
-    public $block;
+    protected $block;
+    protected $is_sample = false; //是否是导出样表
 
     public function __construct(Block $block)
     {
         $this->block = $block;
         $block->transform = true;
         $block->pageable = request('page', 'all') !== 'all';
-        $block->header = $block->getHeader()->filter(function ( $item) {
-            return $item->exportable && (in_array($item->index, request('header', [])));
+        $this->is_sample = request('is_sample', false);
+        $header = request('header', []);
+        $block->header = $block->getHeader()->filter(function ($item) use ($header) {
+            if ($this->is_sample) return $item->importable;
+            return $item->exportable && (in_array($item->index, $header));
         });
-
     }
 
     public function collection()
     {
-        return $this->block->getContent();
+        return $this->is_sample ? collect([]) : $this->block->getContent();
     }
 
     public function headings(): array
