@@ -3,7 +3,6 @@
 namespace XBlock\Kernel;
 
 use Illuminate\Support\ServiceProvider;
-use XBlock\Access\Service;
 use XBlock\Kernel\Elements\Menu;
 
 class KernelProvider extends ServiceProvider
@@ -27,8 +26,9 @@ class KernelProvider extends ServiceProvider
 
     protected function registerMigrations()
     {
-        Service::loadMigrartion();
-        return $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        if (class_exists('\XBlock\Access\Service')) {
+            \XBlock\Access\Service::loadMigrartion();
+        }
     }
 
     protected function registerRouter()
@@ -37,7 +37,7 @@ class KernelProvider extends ServiceProvider
             'prefix' => config('xblock.prefix', 'api/xblock'),
             'namespace' => 'XBlock\Kernel', 'middleware' => config('xblock.middleware', 'auth:api')
         ], function ($router) {
-            $router->post('/menu', function (){
+            $router->post('/menu', function () {
                 $menu = Menu::getMenuTree(true);
                 return message(true)->data($menu);
             });
