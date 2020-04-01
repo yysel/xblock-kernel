@@ -15,13 +15,15 @@ use XBlock\Helper\Tool;
 use XBlock\Kernel\Blocks\Block;
 use XBlock\Kernel\Elements\Event;
 use XBlock\Helper\Response\CodeResponse;
-use XBlock\Kernel\Elements\Buttons\BaseAction;
+use XBlock\Kernel\Elements\Actions\BaseAction;
 use XBlock\Kernel\Services\BlockService;
 
 class BlockController
 {
     protected $service;
-
+    /**
+     * @var Block
+     */
     protected $block;
     protected $block_index;
 
@@ -48,8 +50,8 @@ class BlockController
         if (!($this->block instanceof Block)) return message(false, '当前调用非Block');
         if (!method_exists($this->block, $this->action)) return message(false, "{$this->block_index}中的【{$this->action_index}】事件未定！");
         if (!user('is_admin')) {
-            if (!$this->checkActionAccess()) return message(false, '您没有该事件的权限！');
-            if (!$this->checkButtonAccess()) return message(false, '您没有该操作的权限！');
+            if (!$this->checkEventAccess()) return message(false, '您没有该事件的权限！');
+            if (!$this->checkActionAccess()) return message(false, '您没有该操作的权限！');
         }
         return true;
     }
@@ -62,18 +64,18 @@ class BlockController
             $log = !$this->block->checkCloseLog($this->action);
             if ($data instanceof CodeResponse || $data instanceof Response) $response = $data;
             else  $response = message($data)->data($data);
-            if ($log) $this->actionLog($response);
+            if ($log) $this->eventLog($response);
             return $response;
         }
         return $validity;
     }
 
-    protected function checkActionAccess()
+    protected function checkEventAccess()
     {
 
         if ($this->action_index === 'list' && $this->block->auth) return in_array($this->block_index . '@' . 'list', user('permission', []));
 
-        $events = $this->block->getActionWithPermission();
+        $events = $this->block->getEvents();
 
         $event = $events->first(function ($item) {
             return $item instanceof Event && $item->index == $this->action_index;
@@ -84,19 +86,19 @@ class BlockController
         return true;
     }
 
-    public function checkButtonAccess()
+    public function checkActionAccess()
     {
-        $buttons = $this->block->getButtonWithPermission();
-        $button = $buttons->first(function ($item) {
+        $actions = $this->block->getActions();
+        $action = $actions->first(function ($item) {
             return $item instanceof BaseAction && $item->index == $this->action_index;
         });
-        if ($button) {
-            if ($button && $button->permission && !(in_array($button->permission, user('permission', [])))) return false;
+        if ($action) {
+            if ($action && $action->permission && !(in_array($action->permission, user('permission', [])))) return false;
         }
         return true;
     }
 
-    protected function actionLog($response)
+    protected function eventLog($response)
     {
         if (method_exists($this->block, 'eventLog')) $this->block->eventLog($this->block, $this->action, $response);
         else {

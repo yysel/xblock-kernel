@@ -8,6 +8,7 @@
 
 namespace XBlock\Kernel\Services;
 
+use Illuminate\Support\Facades\Cache;
 use XBlock\Kernel\Blocks\Block;
 use XBlock\Kernel\Elements\Menu;
 use XBlock\Kernel\Elements\Permission as KernelPermission;
@@ -25,31 +26,13 @@ class PermissionService
         return KernelPermission::getPermissionList();
     }
 
-    public function getTree($uuid)
+    public function getPermissionTree(\Closure $func)
     {
-        $this->block_list = $this->getBlockClassList();
-        Menu::getMenuList()->map(function (Menu $item) {
-            if ($item->register) {
-                if (strpos($item->path, '/:relation_uuid') === false) {
-                    $this->menuPermission($item);
-                }
-                if ($item->block) $this->blockPermission($item->block, str_replace('/detail/:relation_uuid', '', $item->path), count((array)$item->block));
-            }
+        $this->permission = Cache::remember('xblock_access_permission', 24 * 3600, function () {
+            return $this->getPermissionList();
         });
-        $this->permission = collect($this->permission);
-        $role = RunTimeService::getRoleModel(true)->where('id', $uuid)->first();
-        if ($role) {
-            $permission = $role->permission();
-            $this->permission = collect($this->permission)->filter(function ($item) use ($permission) {
-                return in_array($item['value'], $permission) || $item['type'] == 'block';
-            });
-        } elseif (!user('is_admin')) {
-            $permission = user('permission', []);
-            $this->permission = collect($this->permission)->filter(function ($item) use ($permission) {
-                return in_array($item['value'], $permission) || $item['type'] == 'block';
-            });
-        }
-        return $this->getPermissionTree();
+        $this->permission = $func($this->permission);
+        return $this->createPermissionTree();
     }
 
     protected function menuPermission($item)
@@ -91,7 +74,7 @@ class PermissionService
                 'parent' => $path
             ];
         }
-        $block->getActionWithPermission()->map(function ($item) use (&$permission_list, $path) {
+        $block->getEvents()->map(function ($item) use ($path) {
             $key = $path . "@{$item->index}";
             $this->permission[$key] = [
                 'text' => $item->title,
@@ -100,11 +83,11 @@ class PermissionService
                 'parent' => $path
             ];
         });
-        $button_permission = $block->getButtonWithPermission();
-        $button_permission->map(function ($item) use (&$permission_list, $button_permission, $path) {
-            $hasDelete = $button_permission->first(function ($item) {
-                return $item->index == 'delete';
-            });
+        $actions = $block->getActions();
+        $hasDelete = $actions->first(function ($item) {
+            return $item->index == 'delete';
+        });
+        $actions->map(function ($item) use ($path, $hasDelete) {
             if (!$hasDelete && ($item->index == 'restore' || $item->index == 'force_delete')) return;
             $key = $path . "@{$item->index}";
             $this->permission[$key] = [
@@ -123,12 +106,26 @@ class PermissionService
         return $blocker->findBlockClassList();
     }
 
-    public function getPermissionTree($parent = null)
+    public function getPermissionList()
+    {
+        $this->block_list = $this->getBlockClassList();
+        Menu::getMenuList()->map(function (Menu $item) {
+            if ($item->register) {
+                if (strpos($item->path, '/:relation_uuid') === false) {
+                    $this->menuPermission($item);
+                }
+                if ($item->block) $this->blockPermission($item->block, str_replace('/detail/:relation_uuid', '', $item->path), count((array)$item->block));
+            }
+        });
+        return collect($this->permission);
+    }
+
+    public function createPermissionTree($parent = null)
     {
         return $this->permission->filter(function ($item) use ($parent) {
             return $parent == $item['parent'];
         })->map(function ($item) {
-            $children = $this->getPermissionTree($item['value']);
+            $children = $this->createPermissionTree($item['value']);
             if ($children->count() == 1 && ($first = $children->first())['type'] == 'block') {
                 $children = $first['children'];
             }

@@ -41,7 +41,6 @@ abstract class Fetch
     final public function init()
     {
         $this->builder = $this->getBuilder();
-        if (method_exists($this->builder, 'forceDelete')) $this->block->recyclable = true;
         $this->initParameter()->initSorting()->initPagination()->getContent();
         return $this->builder->values();
     }
@@ -108,11 +107,11 @@ abstract class Fetch
         $default_value = parameter($tab_key, null);
         if ($tab_key) {
             if ($default_value === null) {
-                $header = $this->block->fields->first(function ($item) use ($tab_key) {
+                $field = $this->block->fields->first(function ($item) use ($tab_key) {
                     return $item->index == $tab_key;
                 });
-                if ($header && $fields->dict) {
-                    $first_item = $fields->dict[0];
+                if ($field && $field->dict) {
+                    $first_item = $field->dict[0];
                     $default_value = isset($first_item['value']) ? $first_item['value'] : null;
                 }
             }

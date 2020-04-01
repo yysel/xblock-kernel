@@ -28,6 +28,7 @@ class ModelFetch extends Fetch
     {
         $builder = new $this->block->origin;
         $this->block->primary_key = $builder->getKeyName();
+        if (method_exists($builder, 'forceDelete')) $this->block->recyclable = true;
         return $builder;
     }
 
