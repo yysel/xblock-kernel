@@ -14,6 +14,10 @@ use XBlock\Helper\Tool;
 use XBlock\Kernel\Blocks\Block;
 use XBlock\Kernel\Elements\Action;
 use XBlock\Kernel\Elements\ActionCreator;
+use ReflectionMethod;
+use XBlock\Kernel\Elements\EventCreator;
+use XBlock\Kernel\Elements\FieldCreator;
+use Exception;
 
 class BlockOperator
 {
@@ -60,9 +64,9 @@ class BlockOperator
 
     public function getActions(): Collection
     {
-        if (method_exists($this, 'actions')) {
-            $creator = new ActionCreator($this->block);
-            $this->actions($creator);
+        if (method_exists($this->block, 'actions')) {
+            $creator = $this->getActionCreator();
+            $this->block->actions($creator);
             return collect($this->block->actions);
 
         } else {
@@ -85,6 +89,35 @@ class BlockOperator
         return $element->filter(function ($item) {
             return in_array($item->permission, user('permission', []));
         });
+    }
+
+    public function getFieldCreator()
+    {
+        return $this->getReflection(FieldCreator::class, 'fields');
+    }
+
+    public function getActionCreator()
+    {
+        return $this->getReflection(ActionCreator::class, 'actions');
+    }
+
+    public function getEventCreator()
+    {
+        return $this->getReflection(EventCreator::class, 'events');
+    }
+
+    public function getReflection($class, $method)
+    {
+        $obj = new ReflectionMethod($this->block, $method);
+        $res = $obj->getParameters();
+        if (isset($res[0])) {
+            $class_name = $res[0]->getClass();
+            if (!$class_name) return new $class($this->block);
+            $class_name = $class_name->name;
+            $creator = new $class_name($this->block);
+            if ($creator instanceof $class) return $creator;
+            else throw  new Exception('方法[' . $method . ']的参数必须继承自[' . $class . ']');
+        }
     }
 
 

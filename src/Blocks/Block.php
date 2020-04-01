@@ -176,7 +176,7 @@ class Block
     {
         if ($this->fields && $this->fields instanceof Collection) return $this->fields;
         if (method_exists($this, 'fields')) {
-            $creator = new FieldCreator($this);
+            $creator = $this->operator->getFieldCreator();
             $this->fields($creator);
             return $this->fields = collect($this->fields);
         } else {
@@ -198,13 +198,12 @@ class Block
 
     final public function getEvents(): Collection
     {
-        if (!$this->events) {
-            if (method_exists($this, 'fields')) {
-                $creator = new FieldCreator($this);
-                $this->fields($creator);
-            }
+        if ($this->events && $this->events instanceof Collection) return $this->events;
+        if (method_exists($this, 'events')) {
+            $creator = $this->operator->getEventCreator();
+            $this->fields($creator);
         }
-        return $this->events = $this->events instanceof Collection ? $this->events : collect($this->events);
+        return $this->events = collect($this->events);
     }
 
 
