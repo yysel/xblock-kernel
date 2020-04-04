@@ -9,10 +9,16 @@
 namespace XBlock\Kernel\Blocks;
 
 
+use XBlock\Kernel\Fetch\CollectionFetch;
+use XBlock\Kernel\Fetch\Fetch;
+
 class CollectionBlock extends Block
 {
-    public $origin_type = 'collection';
-
     public $origin = 'content';
+
+    public function getFetch(): Fetch
+    {
+        return new CollectionFetch($this);
+    }
 
 }

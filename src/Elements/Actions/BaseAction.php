@@ -37,6 +37,10 @@ class BaseAction extends Element
 
     protected $visible = true;
 
+    protected $attributes = [
+        'title', 'index', 'component', 'permission', 'color', 'position',
+        'icon_site', 'icon', 'link', 'confirm', 'visible', 'confirm_description',
+    ];
 
     public function component($component): BaseAction
     {
@@ -98,25 +102,5 @@ class BaseAction extends Element
         $this->confirm_description = $description;
         return $this;
     }
-
-
-    protected function toJson(): array
-    {
-        return [
-            'title' => $this->title,
-            'index' => $this->index,
-            'component' => $this->component,
-            'permission' => $this->index,
-            'color' => $this->color,
-            'position' => $this->position,
-            'icon_site' => $this->icon_site,
-            'icon' => $this->icon,
-            'link' => $this->link,
-            'confirm' => $this->confirm,
-            'visible' => $this->visible,
-            'confirm_description' => $this->confirm_description,
-        ];
-    }
-
 
 }

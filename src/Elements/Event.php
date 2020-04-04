@@ -19,6 +19,7 @@ class Event extends Element
 
     protected $log_description;
 
+    protected $attributes = ['title', 'index'];
 
     public function index($index)
     {
@@ -38,15 +39,6 @@ class Event extends Element
     {
         $this->permission = $permission;
         return $this;
-    }
-
-    protected function toJson()
-    {
-        return [
-            'title' => $this->title,
-            'index' => $this->index,
-            'permission' => $this->index
-        ];
     }
 
 

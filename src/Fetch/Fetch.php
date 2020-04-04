@@ -11,6 +11,7 @@ namespace XBlock\Kernel\Fetch;
 use \Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
+use XBlock\Kernel\Blocks\Block;
 use XBlock\Kernel\Exceptions\HookException;
 
 abstract class Fetch
@@ -30,9 +31,10 @@ abstract class Fetch
     protected $data_count;
 
 
-    public function __construct()
+    public function __construct(Block $block)
     {
         $this->request = app('request');
+        $this->block = $block;
     }
 
     /*×暴露在外部返回格式化以后的数据

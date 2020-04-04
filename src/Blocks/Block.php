@@ -11,11 +11,11 @@ namespace XBlock\Kernel\Blocks;
 use Illuminate\Support\Collection;
 use XBlock\Kernel\Elements\Component;
 use XBlock\Kernel\Elements\Components\Base;
-use XBlock\Kernel\Elements\FieldCreator;
 use XBlock\Kernel\Elements\Fields\BaseField;
 use XBlock\Kernel\Events\BlockOperator;
 use XBlock\Kernel\Events\DefaultEvent;
 use XBlock\Kernel\Fetch\Fetch;
+use XBlock\Kernel\Fetch\ModelFetch;
 
 
 class Block
@@ -25,8 +25,6 @@ class Block
     public $index;
 
     public $component = 'table';
-
-    public $origin_type = 'model';
 
     public $origin;
 
@@ -135,13 +133,9 @@ class Block
      * 获取Fetch的实例化
      * @return Fetch
      */
-    final  private function getFetch(): Fetch
+    protected function getFetch(): Fetch
     {
-        $type = ucfirst($this->origin_type);
-        $fetch_class = "XBlock\Kernel\Fetch\\{$type}Fetch";
-        $fetch = new  $fetch_class;
-        $fetch->block = $this;
-        return $fetch;
+        return new  ModelFetch($this);
     }
 
     final public function initParameter($key, $value, $force = false)
@@ -232,25 +226,20 @@ class Block
 
     final  public function query(): array
     {
-        return [
-            'index' => $this->index,
-            'title' => $this->title,
-            'component' => $this->component,
-            'property' => $this->property,
-            'relation_index' => $this->relation_index,
-            'has_card' => $this->has_card,
-            'tab_key' => $this->tab_key,
-            'width' => $this->width,
-            'height' => $this->height,
+        $array = [
             'header' => $this->getFields(),
             'button' => $this->operator->getAccessActions(),
             'content' => $this->getContent(),
+            'pagination' => $this->fetch->getPagination(),
             'parameter' => $this->fetch->parameter,
             'sorting' => $this->fetch->sorting,
-            'pagination' => $this->fetch->getPagination(),
-            'recyclable' => $this->recyclable,
-            'primary_key' => $this->primary_key,
         ];
+        $attributes = [
+            'index', 'title', 'component', 'property', 'relation_index',
+            'has_card', 'tab_key', 'width', 'height', 'recyclable', 'primary_key'
+        ];
+        foreach ($attributes as $attribute) $array[$attribute] = $this->{$attribute};
+        return $array;
     }
 
 

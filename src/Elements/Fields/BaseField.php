@@ -38,7 +38,12 @@ class BaseField extends Element
     protected $unit;
     protected $format_func;
     protected $property = [];
-
+    protected $attributes = [
+        'title', 'index', 'input', 'description', 'dict', 'relation',
+        'visible', 'addable', 'editable', 'filterable', 'filter_position', 'sortable',
+        'exportable', 'importable', 'require', 'default', 'value_type', 'fixed',
+        'parent', 'width', 'link', 'render', 'unit', 'property',
+    ];
 
     public function invisible(): self
     {
@@ -190,37 +195,6 @@ class BaseField extends Element
         return $this;
     }
 
-
-    protected function toJson(): array
-    {
-        return [
-            'title' => $this->title,
-            'index' => $this->index,
-            'input' => $this->input,
-            'permission' => $this->index,
-            'description' => $this->description,
-            'dict' => $this->dict,
-            'relation' => $this->relation,
-            'visible' => $this->visible,
-            'addable' => $this->addable,
-            'editable' => $this->editable,
-            'filterable' => $this->filterable,
-            'filter_position' => $this->filter_position,
-            'sortable' => $this->sortable,
-            'exportable' => $this->exportable,
-            'importable' => $this->importable,
-            'require' => $this->require,
-            'default' => $this->default,
-            'value_type' => $this->value_type,
-            'fixed' => $this->fixed,
-            'parent' => $this->parent,
-            'width' => $this->width,
-            'link' => $this->link,
-            'render' => $this->render,
-            'unit' => $this->unit,
-            'property' => $this->property
-        ];
-    }
 
     public function get($key)
     {

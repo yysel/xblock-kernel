@@ -17,6 +17,8 @@ class Element implements JsonSerializable
 
     protected $index;
 
+    protected $attributes = [];
+
     public function __construct($index = '', $title = '')
     {
         if ($index) $this->index = $index;
@@ -59,6 +61,18 @@ class Element implements JsonSerializable
         if ($bool) return $func($this);
         elseif ($func2) return $func2($this);
         return $this;
+    }
+
+    protected function toJson(): array
+    {
+        return $this->getAttributes($this->attributes);
+    }
+
+    protected function getAttributes(array $attributes): array
+    {
+        $array = [];
+        foreach ($attributes as $attribute) $array[$attribute] = $this->{$attribute};
+        return $array;
     }
 
 
