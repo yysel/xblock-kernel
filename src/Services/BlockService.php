@@ -22,9 +22,10 @@ class BlockService
 
     public function findBlockClassFormCache($block_name)
     {
-        return Cache::remember('block_class_name', 24 * 3600, function () use ($block_name) {
-            return $this->findBlockClass($block_name);
+        $block_list= Cache::remember('block_class_name', 24 * 3600, function () use ($block_name) {
+            return $this->findBlockClassList();
         });
+        return isset($block_list[$block_name]) ? $block_list[$block_name] : null;
     }
 
     public function findBlockClassList()
