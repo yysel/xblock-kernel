@@ -112,7 +112,7 @@ abstract class Fetch
                 $field = $this->block->fields->first(function ($item) use ($tab_key) {
                     return $item->index == $tab_key;
                 });
-                if ($field && $field->dict) {
+                if ($field && $field->dict && isset($field->dict[0])) {
                     $first_item = $field->dict[0];
                     $default_value = isset($first_item['value']) ? $first_item['value'] : null;
                 }
