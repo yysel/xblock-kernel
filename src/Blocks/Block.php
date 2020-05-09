@@ -218,7 +218,7 @@ class Block
         return in_array($action, $this->close_log_list);
     }
 
-    public function recyclable()
+    final public function recyclable()
     {
         $this->model();
         return $this->recyclable;
