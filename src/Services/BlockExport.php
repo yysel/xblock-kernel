@@ -25,7 +25,7 @@ class BlockExport implements FromCollection, WithHeadings
         $block->pageable = request('page', 'all') !== 'all';
         $this->is_sample = request('is_sample', false);
         $header = request('header', []);
-        $block->header = $block->getFields()->filter(function ($item) use ($header) {
+        $block->fields = $block->getFields()->filter(function ($item) use ($header) {
             if ($this->is_sample) return $item->importable;
             return $item->exportable && (in_array($item->index, $header));
         });
@@ -38,7 +38,7 @@ class BlockExport implements FromCollection, WithHeadings
 
     public function headings(): array
     {
-        return $this->block->header->map(function ($item) {
+        return $this->block->fields->map(function ($item) {
             return $item->title;
         })->toArray();
     }
