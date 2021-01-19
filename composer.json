@@ -16,7 +16,7 @@
     },
     "require": {
         "php": "^7.2",
-        "laravel/lumen-framework": "^7.0",
+        "laravel/lumen-framework": "^6.0",
         "maatwebsite/excel": "^3.1",
         "xblock/helper":"^1.0"
     }
