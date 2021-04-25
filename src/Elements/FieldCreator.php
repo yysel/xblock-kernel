@@ -15,6 +15,7 @@ use XBlock\Kernel\Elements\Fields\BaseField;
 class FieldCreator
 {
     protected $block;
+    protected $group_name = null;
 
     public function __construct(Block $block)
     {
@@ -112,7 +113,16 @@ class FieldCreator
 
     public function create(BaseField $field)
     {
+        if ($this->group_name) $field->group($this->group_name);
         $this->block->fields[] = $field;
         return $field;
+    }
+
+    public function group($name, $func)
+    {
+        $this->group_name = $name;
+        $func($this);
+        $this->group_name = null;
+        return $this;
     }
 }

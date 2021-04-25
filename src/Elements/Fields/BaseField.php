@@ -27,6 +27,7 @@ class BaseField extends Element
     protected $importable = true;
     protected $description;
     protected $require = false;
+    protected $group = null;
     protected $default;
     protected $value_type = 'normal';
     protected $fixed = false;
@@ -42,7 +43,7 @@ class BaseField extends Element
         'title', 'index', 'input', 'description', 'dict', 'relation',
         'visible', 'addable', 'editable', 'filterable', 'filter_position', 'sortable',
         'exportable', 'importable', 'require', 'default', 'value_type', 'fixed',
-        'parent', 'width', 'link', 'render', 'unit', 'property',
+        'parent', 'width', 'link', 'render', 'unit', 'property','group'
     ];
 
     public function invisible(): self
@@ -153,6 +154,12 @@ class BaseField extends Element
     public function link($link): self
     {
         $this->link = $link;
+        return $this;
+    }
+
+    public function group($group): self
+    {
+        $this->group = $group;
         return $this;
     }
 

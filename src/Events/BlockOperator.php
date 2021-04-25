@@ -83,7 +83,7 @@ class BlockOperator
         if (user('is_admin')) return $element;
         return $element->filter(function ($item) {
             return in_array($item->permission, user('permission', []));
-        });
+        })->values();
     }
 
     public function getFieldCreator()
