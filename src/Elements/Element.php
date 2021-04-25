@@ -31,7 +31,7 @@ class Element implements JsonSerializable
         return new static($index, $title);
     }
 
-    static public function fill(Array $attribute = [])
+    static public function fill(array $attribute = [])
     {
         $ele = static::make();
         foreach ($attribute as $key => $value) {
@@ -73,6 +73,12 @@ class Element implements JsonSerializable
         $array = [];
         foreach ($attributes as $attribute) $array[$attribute] = $this->{$attribute};
         return $array;
+    }
+
+    public function setAttribute($attributes)
+    {
+        $this->attributes = $attributes;
+        return $this;
     }
 
 

@@ -10,6 +10,7 @@ namespace XBlock\Kernel\Elements\Actions;
 
 
 use XBlock\Kernel\Elements\Element;
+use XBlock\Kernel\Elements\Form;
 
 class BaseAction extends Element
 {
@@ -37,9 +38,11 @@ class BaseAction extends Element
 
     protected $visible = true;
 
+    protected $form = null;
+
     protected $attributes = [
         'title', 'index', 'component', 'permission', 'color', 'position',
-        'icon_site', 'icon', 'link', 'confirm', 'visible', 'confirm_description',
+        'icon_site', 'icon', 'link', 'confirm', 'visible', 'confirm_description', 'form'
     ];
 
     public function component($component): BaseAction
@@ -100,6 +103,19 @@ class BaseAction extends Element
     {
         $this->confirm = $confirm;
         $this->confirm_description = $description;
+        return $this;
+    }
+
+    //构造表单
+    public function form($fields = []): BaseAction
+    {
+        $form = Form::make();
+        if ($fields instanceof \Closure) {
+            $fields($form);
+        } else {
+            $form->fields($fields);
+        }
+        $this->form = $form;
         return $this;
     }
 
