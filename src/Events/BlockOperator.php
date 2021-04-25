@@ -50,18 +50,6 @@ class BlockOperator
         ]);
     }
 
-    public function getAllActions(): Collection
-    {
-        if ($this->block->actions) return $this->block->actions;
-        if ($this->block->recyclable()) return $this->block->actions = $this->getActions()->concat($this->getRecycleActions());
-        return $this->block->actions = $this->getActions();
-    }
-
-    public function getAccessActions()
-    {
-        return $this->checkAccess($this->block->getActions(false));
-    }
-
     public function getActions(): Collection
     {
         if (method_exists($this->block, 'actions')) {
@@ -75,6 +63,13 @@ class BlockOperator
                 return $item;
             });
         }
+    }
+
+    //当前应显示的操作
+    public function currentActions(): Collection
+    {
+        if (parameter('__deleted', false)) return $this->checkAccess($this->block->recycle_actions);
+        return $this->checkAccess($this->block->actions);
     }
 
 

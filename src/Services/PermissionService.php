@@ -83,7 +83,7 @@ class PermissionService
                 'parent' => $path
             ];
         });
-        $actions = $block->getActions();
+        $actions = $block->all_actions;
         $hasDelete = $actions->first(function ($item) {
             return $item->index == 'delete';
         });

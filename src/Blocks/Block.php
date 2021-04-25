@@ -63,6 +63,10 @@ class Block
 
     public $actions;
 
+    public $all_actions;
+
+    public $recycle_actions;
+
     public $events;
 
     protected $content = [];
@@ -100,6 +104,9 @@ class Block
 
         $this->location = request()->header('location');
         $this->fetch = $this->getFetch();
+        $this->actions = $this->operator->getActions();
+        $this->recycle_actions = $this->operator->getRecycleActions();
+        $this->all_actions = $this->actions->concat($this->recycle_actions);
 
     }
 
@@ -228,7 +235,7 @@ class Block
     {
         $array = [
             'header' => $this->getFields(),
-            'button' => $this->operator->getAccessActions(),
+            'button' => $this->operator->currentActions(),
             'content' => $this->getContent(),
             'pagination' => $this->fetch->getPagination(),
             'parameter' => $this->fetch->parameter,

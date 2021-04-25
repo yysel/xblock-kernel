@@ -88,12 +88,12 @@ class BlockController
 
     public function checkActionAccess()
     {
-        $actions = $this->block->getActions();
+        $actions = $this->block->all_actions;
         $action = $actions->first(function ($item) {
             return $item instanceof BaseAction && $item->index == $this->action_index;
         });
         if ($action) {
-            if ($action && $action->permission && !(in_array($action->permission, user('permission', [])))) return false;
+            if ($action->permission && !(in_array($action->permission, user('permission', [])))) return false;
         }
         return true;
     }
