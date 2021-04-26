@@ -28,9 +28,9 @@ class PermissionService
 
     public function getPermissionTree(\Closure $func)
     {
-        $this->permission = Cache::remember('xblock_access_permission', 24 * 3600, function () {
+        $this->permission = env('APP_ENV') === 'production' ? Cache::remember('xblock_access_permission', 24 * 3600, function () {
             return $this->getPermissionList();
-        });
+        }) : $this->getPermissionList();
         $this->permission = $func($this->permission);
         return $this->createPermissionTree();
     }
