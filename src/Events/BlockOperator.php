@@ -18,6 +18,7 @@ use ReflectionMethod;
 use XBlock\Kernel\Elements\EventCreator;
 use XBlock\Kernel\Elements\FieldCreator;
 use Exception;
+use XBlock\Kernel\Elements\Fields\BaseField;
 
 class BlockOperator
 {
@@ -65,6 +66,40 @@ class BlockOperator
         }
     }
 
+
+    final public function getFields(): Collection
+    {
+        if ($this->block->fields && $this->block->fields instanceof Collection) return $this->fields;
+        if (method_exists($this->block, 'fields')) {
+            $creator = $this->getFieldCreator();
+            $this->block->fields($creator);
+            if (method_exists($this->block, 'editFields')) {
+                $editFields = $this->getFieldCreator('editFields');
+                $editFields->setDefault('invisible', false);
+                $editFields->setDefault('editable', true);
+                $this->block->editFields($editFields);
+            }
+            if (method_exists($this->block, 'addFields')) {
+                $addFields = $this->getFieldCreator('addFields');
+                $addFields->setDefault('addable', true);
+                $addFields->setDefault('invisible', false);
+                $this->block->addFields($addFields);
+            }
+            if (method_exists($this->block, 'queryFields')) {
+                $queryFields = $this->getFieldCreator('queryFields');
+                $queryFields->setDefault('filterable', true);
+                $queryFields->setDefault('invisible', false);
+                $this->block->queryFields($queryFields);
+            }
+            return $this->block->fields = collect($this->block->fields);
+        } else {
+            return $this->block->fields = collect($this->block->header())->filter(function ($item) {
+                return $item instanceof BaseField;
+            })->values();
+        }
+
+    }
+
     //当前应显示的操作
     public function currentActions(): Collection
     {
@@ -86,9 +121,9 @@ class BlockOperator
         })->values();
     }
 
-    public function getFieldCreator()
+    public function getFieldCreator($method = 'fields'): FieldCreator
     {
-        return $this->getReflection(FieldCreator::class, 'fields');
+        return $this->getReflection(FieldCreator::class, $method);
     }
 
     public function getActionCreator()

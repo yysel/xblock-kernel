@@ -52,13 +52,13 @@ class Form extends Element
     }
 
 
-    public function confirm_title($confirm_title): self
+    public function confirmTitle($confirm_title): self
     {
         $this->confirm_title = $confirm_title;
         return $this;
     }
 
-    public function cancel_title($cancel_title): self
+    public function cancelTitle($cancel_title): self
     {
         $this->cancel_title = $cancel_title;
         return $this;

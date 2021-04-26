@@ -25,7 +25,7 @@ trait DefaultEvent
 
     public function contents()
     {
-        $this->getFields();
+        $this->operator->getFields();
         $content = $this->getContent();
         return message(true)->data($content)->silence();
     }

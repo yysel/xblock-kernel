@@ -32,7 +32,7 @@ class BlockImport implements ToArray, WithHeadingRow, WithMultipleSheets, WithCh
     public function __construct(Block $block)
     {
         $header = [];
-        $block->getFields()->map(function ($item) use (&$header) {
+        $block->operator->getFields()->map(function ($item) use (&$header) {
             if ($item->importable) {
                 $header[$item->title] = $item;
                 $this->header[$item->index] = $item;

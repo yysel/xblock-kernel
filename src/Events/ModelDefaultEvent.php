@@ -24,7 +24,7 @@ trait ModelDefaultEvent
     {
         DB::beginTransaction();
         $model = $this->model();
-        $this->getFields()->each(function ($item) use (&$model, $request) {
+        $this->operator->getFields()->each(function ($item) use (&$model, $request) {
             if ((($item->addable && !in_array($item->index, $this->add_except)) || in_array($item->index, $this->add_include)) && $request->has($item->index)) {
                 $model->{$item->index} = $request->input($item->index);
             }
@@ -58,7 +58,7 @@ trait ModelDefaultEvent
             DB::rollBack();
             return message(false, '该数据不存在！');
         }
-        $this->getFields()->each(function ($item) use (&$model, $request) {
+        $this->operator->getFields()->each(function ($item) use (&$model, $request) {
             if ((($item->editable && !in_array($item->index, $this->edit_except)) || in_array($item->index, $this->edit_include)) && $request->has($item->index)) {
                 $model->{$item->index} = $request->input($item->index);
             }

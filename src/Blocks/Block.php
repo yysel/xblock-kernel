@@ -85,7 +85,7 @@ class Block
 
     use  DefaultEvent;
 
-    private $operator;
+    public $operator;
 
     final public function __construct($data = [])
     {
@@ -115,7 +115,7 @@ class Block
         return Component::table();
     }
 
-    protected function header()
+    public function header()
     {
         return [];
     }
@@ -173,29 +173,6 @@ class Block
         return $this->fetch->init();
     }
 
-    final public function getFields(): Collection
-    {
-        if ($this->fields && $this->fields instanceof Collection) return $this->fields;
-        if (method_exists($this, 'fields')) {
-            $creator = $this->operator->getFieldCreator();
-            $this->fields($creator);
-            return $this->fields = collect($this->fields);
-        } else {
-            return $this->fields = collect($this->header())->filter(function ($item) {
-                return $item instanceof BaseField;
-            })->values();
-        }
-
-    }
-
-    final public function getActions($all = true): Collection
-    {
-        if ($all) return $this->operator->getAllActions();
-        if ($this->actions) return $this->actions;
-        if (parameter('__deleted', false)) return $this->actions = $this->operator->getRecycleActions();
-        else  return $this->actions = $this->operator->getActions();
-
-    }
 
     final public function getEvents(): Collection
     {
@@ -234,7 +211,7 @@ class Block
     final  public function query(): array
     {
         $array = [
-            'header' => $this->getFields(),
+            'header' => $this->operator->getFields(),
             'button' => $this->operator->currentActions(),
             'content' => $this->getContent(),
             'pagination' => $this->fetch->getPagination(),
