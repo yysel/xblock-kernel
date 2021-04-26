@@ -43,8 +43,20 @@ class BaseField extends Element
         'title', 'index', 'input', 'description', 'dict', 'relation',
         'visible', 'addable', 'editable', 'filterable', 'filter_position', 'sortable',
         'exportable', 'importable', 'require', 'default', 'value_type', 'fixed',
-        'parent', 'width', 'link', 'render', 'unit', 'property','group'
+        'parent', 'width', 'link', 'render', 'unit', 'property', 'group'
     ];
+
+    public function title($title): self
+    {
+        $this->title = $title;
+        return $this;
+    }
+
+    public function index($index): self
+    {
+        $this->index = $index;
+        return $this;
+    }
 
     public function invisible(): self
     {

@@ -15,6 +15,8 @@ use XBlock\Kernel\Elements\Fields\CascadeCheckBox;
 use XBlock\Kernel\Elements\Fields\Cascade;
 use XBlock\Kernel\Elements\Fields\Checkbox;
 use XBlock\Kernel\Elements\Fields\Date;
+use XBlock\Kernel\Elements\Fields\DateRange;
+use XBlock\Kernel\Elements\Fields\DateTime;
 use XBlock\Kernel\Elements\Fields\Editor;
 use XBlock\Kernel\Elements\Fields\Month;
 use XBlock\Kernel\Elements\Fields\Password;
@@ -78,6 +80,16 @@ class Field
     static public function date($index, $title = null): Date
     {
         return Date::make($index, $title);
+    }
+
+    static public function datetime($index, $title = null): DateTime
+    {
+        return DateTime::make($index, $title);
+    }
+
+    static public function dateRange($index, $title = null): DateRange
+    {
+        return DateRange::make($index, $title);
     }
 
     static public function month($index, $title = null): Month

@@ -45,6 +45,19 @@ class BaseAction extends Element
         'icon_site', 'icon', 'link', 'confirm', 'visible', 'confirm_description', 'form'
     ];
 
+
+    public function title($title): BaseAction
+    {
+        $this->title = $title;
+        return $this;
+    }
+
+    public function index($index): BaseAction
+    {
+        $this->index = $index;
+        return $this;
+    }
+
     public function component($component): BaseAction
     {
         $this->component = $component;

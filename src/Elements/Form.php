@@ -9,10 +9,18 @@ use XBlock\Kernel\Elements\Fields\BaseField;
 class Form extends Element
 {
     //字段
-    protected $fields = [];
+    public $fields = [];
     protected $confirm_title = '确认';
     protected $cancel_title = '取消';
+    public $field_creator = null;
     protected $attributes = ['fields', 'title', 'confirm_title', 'cancel_title'];
+
+
+    public function __construct()
+    {
+        $this->field_creator = new  FieldCreator($this);
+        $this->field_creator->setDefault('writable', true);
+    }
 
     public function field(BaseField $field): self
     {

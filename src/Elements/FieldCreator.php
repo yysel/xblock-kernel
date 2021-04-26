@@ -11,15 +11,18 @@ namespace XBlock\Kernel\Elements;
 
 use XBlock\Kernel\Blocks\Block;
 use XBlock\Kernel\Elements\Fields\BaseField;
+use XBlock\Kernel\Elements\Fields\DateRange;
+use XBlock\Kernel\Elements\Fields\DateTime;
 
 class FieldCreator
 {
-    protected $block;
+    protected $payload;
     protected $group_name = null;
+    protected $default = [];
 
-    public function __construct(Block $block)
+    public function __construct($payload)
     {
-        $this->block = $block;
+        $this->payload = $payload;
     }
 
     public function key(...$key)
@@ -73,6 +76,18 @@ class FieldCreator
         return $this->create(Field::date($index, $title));
     }
 
+    public function datetime($index, $title = null): DateTime
+    {
+        return $this->create(Field::datetime($index, $title));
+
+    }
+
+    public function dateRange($index, $title = null): DateRange
+    {
+        return $this->create(Field::dateRange($index, $title));
+
+    }
+
     public function month($index, $title = null)
     {
         return $this->create(Field::month($index, $title));
@@ -88,7 +103,6 @@ class FieldCreator
     {
         return $this->create(Field::checkbox($index, $title));
     }
-
 
     public function upload($index, $title = null)
     {
@@ -113,8 +127,13 @@ class FieldCreator
 
     public function create(BaseField $field)
     {
+        if ($this->default) {
+            foreach ($this->default as $key => $value) {
+                $field->{$key}($value);
+            }
+        }
         if ($this->group_name) $field->group($this->group_name);
-        $this->block->fields[] = $field;
+        $this->payload->fields[] = $field;
         return $field;
     }
 
@@ -124,5 +143,10 @@ class FieldCreator
         $func($this);
         $this->group_name = null;
         return $this;
+    }
+
+    public function setDefault($method, $value)
+    {
+        $this->default[$method] = $value;
     }
 }
