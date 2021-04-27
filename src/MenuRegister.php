@@ -14,7 +14,7 @@ use XBlock\Kernel\Elements\Menu;
 class MenuRegister
 {
     static $menu = [];
-
+    public static $check_auth = false;
 
     public function register()
     {

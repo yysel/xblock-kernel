@@ -24,6 +24,7 @@ class Menu
     protected $block = [];
     protected $register = true;
     public $path = '/';
+    public $check_auth = false;
 
     public function __construct($index = '', $title = '', $block = null)
     {
@@ -63,7 +64,7 @@ class Menu
 
     public function permission($permission)
     {
-        $this->permission = Permission::use($permission, 'menu');
+        $this->permission = $permission;
         return $this;
     }
 
@@ -76,6 +77,7 @@ class Menu
     public function disable()
     {
         $this->visible = false;
+        $this->permission = null;
         return $this;
     }
 
@@ -96,13 +98,22 @@ class Menu
         $block_array = [];
         if (is_array($block)) {
             foreach ($block as $v) {
-                $block_array[] = $this->getBlockName($v);
+                $block_name = $this->checkPermission($v);
+                if ($block_name) $block_array[] = $block_name;
             }
         } else {
-            $block_array[] = $this->getBlockName($block);
+            $block_name = $this->checkPermission($block);
+            if ($block_name) $block_array[] = $block_name;
         }
         $this->block = $block_array;
         return $this;
+    }
+
+    private function checkPermission($block)
+    {
+        $name = $this->getBlockName($block);
+        if ((user('is_admin') || !MenuRegister::$check_auth)) return $name;
+        else if (in_array($block::getPermission(), user('permission', []))) return $name;
     }
 
     private function getBlockName($block)
@@ -125,21 +136,19 @@ class Menu
     }
 
 
-    public function getChildren($list, $auth = false)
+    public function getChildren($list)
     {
         return $list->filter(function ($item) {
             return $item->parent === $this->index;
-        })->map(function (Menu $item) use ($list, $auth) {
+        })->map(function (Menu $item) use ($list) {
             return [
                 'path' => $item->path,
                 'title' => $item->title,
                 'permission' => $item->getPermission(),
                 'visible' => $item->visible,
                 'icon' => $item->icon,
-                'block' => (user('is_admin') || !$auth) ? $item->block : array_filter((array)$item->block, function ($it) use ($item) {
-                    return in_array( $it . '@list', user('permission', []));
-                }),
-                'children' => $item->getChildren($list, $auth),
+                'block' => $item->block,
+                'children' => $item->getChildren($list),
             ];
         })->values();
 
@@ -152,7 +161,7 @@ class Menu
 
     public static function getMenuTree($auth = false): Collection
     {
-        $menu_list = self::getMenuList();
+        $menu_list = self::getMenuList($auth);
         $menu = $menu_list->filter(function ($item) {
             return !$item->parent;
         })->map(function (Menu $item) use ($menu_list, $auth) {
@@ -162,20 +171,19 @@ class Menu
                 'permission' => $item->getPermission(),
                 'visible' => $item->visible,
                 'icon' => $item->icon,
-                'block' => (user('is_admin') || !$auth) ? $item->block : array_filter((array)$item->block, function ($it) use ($item) {
-                    return in_array( $it . '@list', user('permission', []));
-                }),
-                'children' => $item->getChildren($menu_list, $auth),
+                'block' => $item->block,
+                'children' => $item->getChildren($menu_list),
             ];
         })->values();
         return $menu;
     }
 
-    public static function getMenuList(): Collection
+    public static function getMenuList($auth = false): Collection
     {
         $register = config('xblock.register.menu', MenuRegister::class);
         $register = new $register;
         $register = $register instanceof MenuRegister ? $register : new MenuRegister();
+        MenuRegister::$check_auth = $auth;
         $register->register();
         $register->kernelRegister();
         return collect(MenuRegister::$menu);
@@ -184,6 +192,7 @@ class Menu
     protected function getPermission()
     {
         $permission = $this->permission ? $this->permission : str_replace('/detail/:relation_uuid', '', $this->path);
+        if (!$this->visible) $permission = false;
         if (user('is_admin')) return null;
         return $permission;
     }

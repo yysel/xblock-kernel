@@ -9,6 +9,7 @@
 namespace XBlock\Kernel\Blocks;
 
 use Illuminate\Support\Collection;
+use XBlock\Helper\Tool;
 use XBlock\Kernel\Elements\Component;
 use XBlock\Kernel\Elements\Components\Base;
 use XBlock\Kernel\Elements\Fields\BaseField;
@@ -81,7 +82,7 @@ class Block
 
     public $auth = true;
 
-    private $permission;
+    public static $permission;
 
     use  DefaultEvent;
 
@@ -94,8 +95,8 @@ class Block
             foreach ($data as $key => $value) $this->$key = $value;
         }
         if (method_exists($this, 'boot')) $this->boot();
-        $this->index = $this->operator->getIndex();
-        if ($this->auth) $this->permission = $this->index . '@list';
+        $this->index = static::getIndex();
+        if ($this->auth) static::$permission = static::getPermission();
         $component = $this->component();
         if ($component instanceof Base) {
             $this->component = $component->getComponent();
@@ -194,6 +195,20 @@ class Block
         if (is_array($action)) array_merge($this->close_log_list, $action);
         else $this->close_log_list[] = $action;
         return $this;
+    }
+
+    final static public function getIndex(): string
+    {
+        $explode = explode('\\', static::class);
+        $name = end($explode);
+        $name = Tool::unpascal($name);
+        return $name ;
+    }
+
+    final static public function getPermission(): string
+    {
+        if (static::$permission) return static::$permission;
+        return static::getIndex() . '@list';
     }
 
 

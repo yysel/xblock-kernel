@@ -46,7 +46,7 @@ class BlockOperator
             Action::small('force_delete', '清除')
                 ->position('inner')
                 ->confirm('清除后，数据不可再恢复！确定吗？')
-                ->permission($this->createPermissionName('restore'))
+                ->permission($this->createPermissionName('force_delete'))
                 ->color('#F85054'),
         ]);
     }

@@ -50,7 +50,7 @@ class BlockController
         if (!($this->block instanceof Block)) return message(false, '当前调用非Block');
         if (!method_exists($this->block, $this->action)) return message(false, "{$this->block_index}中的【{$this->action_index}】事件未定！");
         if (!user('is_admin')) {
-            if (!$this->checkEventAccess()) return message(false, '您没有该事件的权限！');
+            if (!$this->checkEventAccess()) return message(false, '您没有该事件的权限！')->silence($this->action_index === 'list');
             if (!$this->checkActionAccess()) return message(false, '您没有该操作的权限！');
         }
         return true;
@@ -72,8 +72,7 @@ class BlockController
 
     protected function checkEventAccess()
     {
-
-        if ($this->action_index === 'list' && $this->block->auth) return in_array($this->block_index . '@' . 'list', user('permission', []));
+        if ($this->action_index === 'list' && $this->block->auth) return in_array($this->block::getPermission(), user('permission', []));
 
         $events = $this->block->getEvents();
 

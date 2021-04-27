@@ -90,9 +90,15 @@ class PermissionService
         $actions->map(function ($item) use ($path, $hasDelete) {
             if (!$hasDelete && ($item->index == 'restore' || $item->index == 'force_delete')) return;
             $key = $path . "@{$item->index}";
+//            if( !empty($this->permission[$key]) && $item->index!='force_delete') dd($this->permission[$key],[
+//                    'text' => $item->title,
+//                    'value' => $key,
+//                    'type' => 'action',
+//                    'parent' => $path
+//        ],$item);
             $this->permission[$key] = [
                 'text' => $item->title,
-                'value' => $key,
+                'value' => $item->permission?$item->permission: $key,
                 'type' => 'action',
                 'parent' => $path
             ];

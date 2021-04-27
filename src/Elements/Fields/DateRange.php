@@ -8,7 +8,7 @@ use XBlock\Kernel\Elements\Render;
 
 class DateRange extends BaseField
 {
-    use WhereBetween;
+    use WhereDateBetween;
 
     protected $input = 'daterange';
     protected $render = Render::TEXT;
