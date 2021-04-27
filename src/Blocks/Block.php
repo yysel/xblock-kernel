@@ -96,7 +96,7 @@ class Block
         }
         if (method_exists($this, 'boot')) $this->boot();
         $this->index = static::getIndex();
-        if ($this->auth) static::$permission = static::getPermission();
+//        if ($this->auth) static::$permission = static::getPermission();
         $component = $this->component();
         if ($component instanceof Base) {
             $this->component = $component->getComponent();
