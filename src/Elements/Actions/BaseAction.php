@@ -40,9 +40,11 @@ class BaseAction extends Element
 
     protected $form = null;
 
+    protected $mode = false;
+
     protected $attributes = [
         'title', 'index', 'component', 'permission', 'color', 'position',
-        'icon_site', 'icon', 'link', 'confirm', 'visible', 'confirm_description', 'form'
+        'icon_site', 'icon', 'link', 'confirm', 'visible', 'confirm_description', 'form','mode'
     ];
 
 
@@ -129,6 +131,13 @@ class BaseAction extends Element
             $form->fields($fields);
         }
         $this->form = $form;
+        return $this;
+    }
+
+    public function selectBar($bool = true): BaseAction
+    {
+        $this->mode = $bool;
+
         return $this;
     }
 
