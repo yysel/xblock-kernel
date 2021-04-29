@@ -37,7 +37,7 @@ class Menu
     {
         $menu = new static($index, $title, $block);
         if ($this->index) {
-            $menu->parent = $this->index;
+            $menu->parent = $this->parent.'/'.trim($this->index, '/');
             $menu->path = $this->path . '/' . trim($index, '/');
         }
         MenuRegister::$menu[] = &$menu;
@@ -139,7 +139,7 @@ class Menu
     public function getChildren($list)
     {
         return $list->filter(function ($item) {
-            return $item->parent === $this->index;
+            return $item->parent === $this->path;
         })->map(function (Menu $item) use ($list) {
             return [
                 'path' => $item->path,
