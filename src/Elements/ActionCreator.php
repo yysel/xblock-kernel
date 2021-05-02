@@ -73,6 +73,11 @@ class ActionCreator
         return $this->create(Action::delete($component));
     }
 
+    public function batchDelete($component = 'large')
+    {
+        return $this->create(Action::batchDelete($component));
+    }
+
     public function edit($component = 'small')
     {
         return $this->create(Action::edit($component));

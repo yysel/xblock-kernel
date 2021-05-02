@@ -48,6 +48,7 @@ class Action extends Element
     {
         return Icon::make($index, $title)->icon($icon);
     }
+
     static public function filledIcon($index, $title = null, $icon = null): BaseAction
     {
         return SolidIcon::make($index, $title)->icon($icon);
@@ -78,6 +79,15 @@ class Action extends Element
             ->icon('delete')
             ->confirm()
             ->color('#F85054');
+    }
+
+    static public function batchDelete($component = 'small'): BaseAction
+    {
+        return Large::make('batch_delete', '批量删除')
+            ->component($component)
+            ->icon('delete')
+            ->confirm()
+            ->color('#F85054')->selectBar();
     }
 
     static public function edit($component = 'small'): BaseAction

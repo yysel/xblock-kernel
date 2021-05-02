@@ -47,6 +47,19 @@ trait ModelDefaultEvent
         return message(false, '创建失败！');
     }
 
+    public function batchForceDelete($request)
+    {
+        $model = $this->model();
+        $primary = $model->getKeyName();
+        $primary_value = $request->input($primary);
+        $res = $model->when($primary_value, function ($q) use ($primary, $primary_value) {
+            $q->withTrashed()->whereIn($primary, $primary_value);
+        }, function ($q) {
+            $q->onlyTrashed();
+        })->forceDelete();
+        return message($res)->errorInfo('操作失败！')->successInfo('数据已清空！');
+    }
+
     public function edit($request)
     {
         DB::beginTransaction();
@@ -76,6 +89,28 @@ trait ModelDefaultEvent
         }
         DB::rollBack();
         return message(false, '修改失败！');
+    }
+
+    public function batchDelete($request)
+    {
+        DB::beginTransaction();
+        $model = $this->model();
+        $primary = $model->getKeyName();
+        $primary_value = $request->input($primary);
+        if (!$primary_value) return message(false)->info('请选择要删除的数据！');
+        $res = $model->withoutGlobalScopes()->whereIn($primary, $primary_value)->delete();
+        $hook_res = CallHook::call('beforeBatchDelete', $primary_value, $this);
+        if ($hook_res instanceof ErrorCode) {
+            DB::rollBack();
+            return $hook_res;
+        }
+        if ($res) {
+            CallHook::call('afterBatchDelete', $primary_value, $this);
+            DB::commit();
+            return message(true, '删除成功！', $model);
+        }
+        DB::rollBack();
+        return message(false, '删除失败！');
     }
 
     public function delete($request)

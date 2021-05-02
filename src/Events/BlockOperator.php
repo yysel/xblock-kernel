@@ -43,6 +43,12 @@ class BlockOperator
             Action::small('restore', '恢复')
                 ->position('inner')
                 ->permission($this->createPermissionName('restore')),
+            Action::default('batch_force_delete', '清空')
+                ->position('top')
+                ->confirm('清空后，数据不可再恢复！确定吗？')
+                ->color('#F85054')
+                ->permission($this->createPermissionName('batch_force_delete'))->selectBar(),
+
             Action::small('force_delete', '清除')
                 ->position('inner')
                 ->confirm('清除后，数据不可再恢复！确定吗？')
