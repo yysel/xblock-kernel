@@ -16,6 +16,7 @@ use XBlock\Kernel\Blocks\Block;
 use XBlock\Kernel\Elements\Event;
 use XBlock\Helper\Response\CodeResponse;
 use XBlock\Kernel\Elements\Actions\BaseAction;
+use XBlock\Kernel\Elements\Form;
 use XBlock\Kernel\Services\BlockService;
 
 class BlockController
@@ -63,7 +64,9 @@ class BlockController
             $data = $this->block->{$this->action}($request);
             $log = !$this->block->checkCloseLog($this->action);
             if ($data instanceof CodeResponse || $data instanceof Response) $response = $data;
-            else  $response = message($data)->data($data);
+            else if ($data instanceof Form) {
+                $response = message($data)->data($data)->type('form');
+            } else  $response = message($data)->data($data);
             if ($log) $this->eventLog($response);
             return $response;
         }

@@ -77,8 +77,6 @@ class BlockOperator
     {
         if ($this->block->fields && $this->block->fields instanceof Collection) return $this->fields;
         if (method_exists($this->block, 'fields')) {
-            $creator = $this->getFieldCreator();
-            $this->block->fields($creator);
             if (method_exists($this->block, 'editFields')) {
                 $editFields = $this->getFieldCreator('editFields');
                 $editFields->setDefault('invisible', false);
@@ -97,6 +95,8 @@ class BlockOperator
                 $queryFields->setDefault('invisible', false);
                 $this->block->queryFields($queryFields);
             }
+            $creator = $this->getFieldCreator();
+            $this->block->fields($creator);
             return $this->block->fields = collect($this->block->fields);
         } else {
             return $this->block->fields = collect($this->block->header())->filter(function ($item) {

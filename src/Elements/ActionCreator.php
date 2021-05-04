@@ -14,11 +14,11 @@ use XBlock\Kernel\Elements\Actions\BaseAction;
 
 class ActionCreator
 {
-    protected $block;
+    protected $payload;
 
-    public function __construct(Block $block)
+    public function __construct($payload)
     {
-        $this->block = $block;
+        $this->payload = $payload;
     }
 
     public function default($index, $title = null)
@@ -95,8 +95,8 @@ class ActionCreator
 
     public function create(BaseAction $action)
     {
-        $action->permission($this->block->index . '@' . $action->index);
-        $this->block->actions[] = $action;
+        $action->permission($this->payload->index . '@' . $action->index);
+        $this->payload->actions[] = $action;
         return $action;
     }
 }

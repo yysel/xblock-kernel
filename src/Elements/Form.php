@@ -12,13 +12,26 @@ class Form extends Element
     public $fields = [];
     protected $confirm_title = '确认';
     protected $cancel_title = '取消';
+    /**
+     * @var FieldCreator
+     */
     public $field_creator = null;
-    protected $attributes = ['fields', 'title', 'confirm_title', 'cancel_title'];
-
+    /**
+     * @var ActionCreator
+     */
+    public $action_creator = null;
+    public $actions = [];
+    protected $info = null;
+    protected $info_title = null;
+    protected $info_type = null;
+    protected $info_position = 'bottom';
+    protected $attributes = ['fields', 'title', 'confirm_title', 'cancel_title', 'info', 'actions', 'info_title', 'info_type', 'info_position'];
 
     public function __construct()
     {
+        parent::__construct();
         $this->field_creator = new  FieldCreator($this);
+        $this->action_creator = new  ActionCreator($this);
         $this->field_creator->setDefault('writable', true);
     }
 
@@ -33,6 +46,7 @@ class Form extends Element
 
         return $this;
     }
+
 
     public function fields($fields): self
     {
@@ -49,6 +63,43 @@ class Form extends Element
         }
 
         return $this;
+    }
+
+    public function info($title, $message = null, $type = null): self
+    {
+        $this->info_title = $title;
+        $this->info_type = $type;
+        $this->info = $message;
+        return $this;
+    }
+
+    public function infoPosition($position)
+    {
+        $position = $position === 'top' ? $position : 'bottom';
+        $this->info_position = $position;
+        return $this;
+    }
+
+    public function infoType($type)
+    {
+        $this->info_type = $type;
+        return $this;
+    }
+
+    public static function response(\Closure $creator): self
+    {
+        return $creator(self::make());
+    }
+
+    public function handle($handle)
+    {
+        $action = request('form_action');
+        if (!$action) return message(true)->data($this)->type('form');
+        else {
+            if (!is_array($handle)) return $handle();
+            if (is_array($handle) && isset($handle[$action])) return $handle[$action]();
+        }
+
     }
 
 
