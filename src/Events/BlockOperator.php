@@ -81,24 +81,23 @@ class BlockOperator
                 $editFields = $this->getFieldCreator('editFields');
                 $editFields->setDefault('invisible', false);
                 $editFields->setDefault('editable', true);
-                $editFields->setDefault('importable', false);
-                $editFields->setDefault('exportable', false);
+                $editFields->setDefault('disImportable', false);
+                $editFields->setDefault('disExportable', false);
                 $this->block->editFields($editFields);
             }
             if (method_exists($this->block, 'addFields')) {
                 $addFields = $this->getFieldCreator('addFields');
                 $addFields->setDefault('addable', true);
                 $addFields->setDefault('invisible', false);
-                $addFields->setDefault('importable', false);
-                $addFields->setDefault('exportable', false);
+                $addFields->setDefault('disExportable', false);
+                $addFields->setDefault('disImportable', false);
                 $this->block->addFields($addFields);
             }
             if (method_exists($this->block, 'queryFields')) {
                 $queryFields = $this->getFieldCreator('queryFields');
                 $queryFields->setDefault('filterable', true);
-                $queryFields->setDefault('invisible', false);
-                $queryFields->setDefault('importable', false);
-                $queryFields->setDefault('exportable', false);
+                $queryFields->setDefault('disImportable', false);
+                $queryFields->setDefault('disExportable', false);
                 $this->block->queryFields($queryFields);
             }
             $creator = $this->getFieldCreator();

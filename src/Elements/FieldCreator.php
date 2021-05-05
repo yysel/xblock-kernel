@@ -9,7 +9,6 @@
 namespace XBlock\Kernel\Elements;
 
 
-use XBlock\Kernel\Blocks\Block;
 use XBlock\Kernel\Elements\Fields\BaseField;
 use XBlock\Kernel\Elements\Fields\DateRange;
 use XBlock\Kernel\Elements\Fields\DateTime;

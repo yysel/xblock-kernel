@@ -195,12 +195,12 @@ class BaseField extends Element
     }
 
 
-    public function __call($method, $param): self
-    {
-        $this->input = $method;
-        $this->dict = $param;
-        return $this;
-    }
+//    public function __call($method, $param): self
+//    {
+//        $this->input = $method;
+//        $this->dict = $param;
+//        return $this;
+//    }
 
     public function width($width)
     {
