@@ -12,7 +12,6 @@ use Illuminate\Support\Collection;
 use XBlock\Helper\Tool;
 use XBlock\Kernel\Elements\Component;
 use XBlock\Kernel\Elements\Components\Base;
-use XBlock\Kernel\Elements\Fields\BaseField;
 use XBlock\Kernel\Events\BlockOperator;
 use XBlock\Kernel\Events\DefaultEvent;
 use XBlock\Kernel\Fetch\Fetch;
@@ -59,6 +58,7 @@ class Block
     public $edit_include = [];
 
     public $primary_key = 'id';
+    public $filter_expand = false;
 
     public $fields;
 
@@ -202,7 +202,7 @@ class Block
         $explode = explode('\\', static::class);
         $name = end($explode);
         $name = Tool::unpascal($name);
-        return $name ;
+        return $name;
     }
 
     final static public function getPermission(): string
@@ -235,7 +235,7 @@ class Block
         ];
         $attributes = [
             'index', 'title', 'component', 'property', 'relation_index',
-            'has_card', 'tab_key', 'width', 'height', 'recyclable', 'primary_key'
+            'has_card', 'tab_key', 'width', 'height', 'recyclable', 'primary_key', 'filter_expand'
         ];
         foreach ($attributes as $attribute) $array[$attribute] = $this->{$attribute};
         return $array;

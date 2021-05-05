@@ -20,6 +20,7 @@ trait WhereLike
     public function whereCollection($collection, $value)
     {
         return $collection->filter(function ($item) use ($value) {
+            if (!isset($item[$this->index])) return false;
             return strpos($item[$this->index], $value) !== false || $item[$this->index] == $value;
         });
     }

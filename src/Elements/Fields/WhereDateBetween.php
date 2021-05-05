@@ -23,6 +23,7 @@ trait WhereDateBetween
     public function whereCollection($collection, $value)
     {
         return $collection->filter(function ($item) use ($value) {
+            if (!isset($item[$this->index])) return false;
             return $item[$this->index] >= $value[0] && $item[$this->index] <= $value[1];
         });
     }
