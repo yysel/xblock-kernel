@@ -17,6 +17,7 @@ use XBlock\Kernel\Elements\Event;
 use XBlock\Helper\Response\CodeResponse;
 use XBlock\Kernel\Elements\Actions\BaseAction;
 use XBlock\Kernel\Elements\Form;
+use XBlock\Kernel\Events\EventProxy;
 use XBlock\Kernel\Services\BlockService;
 
 class BlockController
@@ -49,7 +50,6 @@ class BlockController
     {
         if (!$this->block) return message(false, '模块不存在！');
         if (!($this->block instanceof Block)) return message(false, '当前调用非Block');
-        if (!method_exists($this->block, $this->action)) return message(false, "{$this->block_index}中的【{$this->action_index}】事件未定！");
         if (!user('is_admin')) {
             if (!$this->checkEventAccess()) return message(false, '您没有该事件的权限！')->silence($this->action_index === 'list');
             if (!$this->checkActionAccess()) return message(false, '您没有该操作的权限！');
@@ -61,7 +61,7 @@ class BlockController
     {
         $validity = $this->validity();
         if ($validity === true) {
-            $data = $this->block->{$this->action}($request);
+            $data = $this->block->callEvent($this->action, $request);
             $log = !$this->block->checkCloseLog($this->action);
             if ($data instanceof CodeResponse || $data instanceof Response) $response = $data;
             else if ($data instanceof Form) {

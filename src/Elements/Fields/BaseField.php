@@ -15,6 +15,7 @@ use XBlock\Kernel\Elements\Element;
 
 class BaseField extends Element
 {
+    static $condition = true;
     protected $input = 'text';
     protected $dict = [];
     protected $relation;
@@ -45,6 +46,14 @@ class BaseField extends Element
         'exportable', 'importable', 'require', 'default', 'value_type', 'fixed',
         'parent', 'width', 'link', 'render', 'unit', 'property', 'group'
     ];
+
+    public function if(\Closure $func)
+    {
+        if (static::$condition) {
+            $func($this);
+        }
+        return $this;
+    }
 
     public function title($title): self
     {

@@ -10,14 +10,25 @@ namespace XBlock\Kernel\Blocks;
 
 use Illuminate\Support\Collection;
 use XBlock\Helper\Tool;
+use XBlock\Kernel\Elements\ActionCreator;
 use XBlock\Kernel\Elements\Component;
 use XBlock\Kernel\Elements\Components\Base;
+use XBlock\Kernel\Elements\FieldCreator;
 use XBlock\Kernel\Events\BlockOperator;
 use XBlock\Kernel\Events\DefaultEvent;
+use XBlock\Kernel\Events\EventProxy;
 use XBlock\Kernel\Fetch\Fetch;
 use XBlock\Kernel\Fetch\ModelFetch;
 
-
+/**
+ * Class Block
+ * @package XBlock\Kernel\Blocks
+ * @method fields (FieldCreator $creator)
+ * @method queryFields (FieldCreator $creator)
+ * @method addFields (FieldCreator $creator)
+ * @method editFields (FieldCreator $creator)
+ * @method actions (ActionCreator $creator)
+ */
 class Block
 {
     public $title;
@@ -80,6 +91,8 @@ class Block
 
     protected $location;
 
+    public $event_proxy = null;
+
     public $auth = true;
 
     public static $permission;
@@ -96,7 +109,21 @@ class Block
         }
         if (method_exists($this, 'boot')) $this->boot();
         $this->index = static::getIndex();
-//        if ($this->auth) static::$permission = static::getPermission();
+        $this->init();
+    }
+
+    public function callEvent($event, $request)
+    {
+        if ($this->event_proxy) {
+            $proxy = new  $this->event_proxy($this);
+            if ($proxy instanceof EventProxy && method_exists($proxy, $event)) return $proxy->{$event}($request);
+        }
+        if (method_exists($this, $event)) return $this->{$event}($request);
+        return message(false, "{$this->index}中的【{$event}】事件未定！");
+    }
+
+    final public function init()
+    {
         $component = $this->component();
         if ($component instanceof Base) {
             $this->component = $component->getComponent();
@@ -108,7 +135,6 @@ class Block
         $this->actions = $this->operator->getActions();
         $this->recycle_actions = $this->operator->getRecycleActions();
         $this->all_actions = $this->actions->concat($this->recycle_actions);
-
     }
 
     protected function component()
