@@ -206,7 +206,7 @@ class Block
         if ($this->events && $this->events instanceof Collection) return $this->events;
         if (method_exists($this, 'events')) {
             $creator = $this->operator->getEventCreator();
-            $this->fields($creator);
+            $this->events($creator);
         }
         return $this->events = collect($this->events);
     }
