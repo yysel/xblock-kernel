@@ -21,6 +21,7 @@ abstract class Fetch
     protected $builder;
 
     public $parameter;
+    public $response_parameter;
 
     public $sorting = [];
 
@@ -66,6 +67,7 @@ abstract class Fetch
     {
         $except = $this->block->where_except;
         $parameter = $this->request->input('parameter', []);
+        $this->response_parameter = $parameter;
         if ((array)$except) {
             foreach ($except as $param) {
                 if (isset($parameter[$param])) unset($parameter[$param]);
@@ -117,7 +119,8 @@ abstract class Fetch
                     $default_value = isset($first_item['value']) ? $first_item['value'] : null;
                 }
             }
-            $this->parameter[$tab_key] = $default_value;
+
+            $this->response_parameter[$tab_key] = $this->parameter[$tab_key] = $default_value;
         }
         return $this;
     }
