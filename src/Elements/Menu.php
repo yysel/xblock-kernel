@@ -23,6 +23,7 @@ class Menu
     protected $visible = true;
     protected $block = [];
     protected $register = true;
+    protected $display = 'tile';
     public $path = '/';
     public $check_auth = false;
 
@@ -37,7 +38,7 @@ class Menu
     {
         $menu = new static($index, $title, $block);
         if ($this->index) {
-            $menu->parent = $this->parent.'/'.trim($this->index, '/');
+            $menu->parent = $this->parent . '/' . trim($this->index, '/');
             $menu->path = $this->path . '/' . trim($index, '/');
         }
         MenuRegister::$menu[] = &$menu;
@@ -93,18 +94,21 @@ class Menu
         return $this;
     }
 
-    public function block($block)
+    public function block($block, $display = null)
     {
         $block_array = [];
         if (is_array($block)) {
+            $display = !$display ? 'tab' : $this->display;
             foreach ($block as $v) {
                 $block_name = $this->checkPermission($v);
                 if ($block_name) $block_array[] = $block_name;
             }
         } else {
+            $display = !$display ? 'tile' : $this->display;
             $block_name = $this->checkPermission($block);
             if ($block_name) $block_array[] = $block_name;
         }
+        $this->display = $display;
         $this->block = $block_array;
         return $this;
     }
@@ -148,6 +152,7 @@ class Menu
                 'visible' => $item->visible,
                 'icon' => $item->icon,
                 'block' => $item->block,
+                'display' => $item->display,
                 'children' => $item->getChildren($list),
             ];
         })->values();
@@ -172,6 +177,7 @@ class Menu
                 'visible' => $item->visible,
                 'icon' => $item->icon,
                 'block' => $item->block,
+                'display' => $item->display,
                 'children' => $item->getChildren($menu_list),
             ];
         })->values();
