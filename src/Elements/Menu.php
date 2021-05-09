@@ -27,6 +27,8 @@ class Menu
     public $path = '/';
     public $check_auth = false;
 
+    protected $detail_mode = false;
+
     public function __construct($index = '', $title = '', $block = null)
     {
         if ($index) $this->index = $index;
@@ -41,6 +43,12 @@ class Menu
             $menu->parent = $this->parent . '/' . trim($this->index, '/');
             $menu->path = $this->path . '/' . trim($index, '/');
         }
+        if ($this->detail_mode) {
+            $index = str_replace(':relation_uuid', '', $menu->index);
+            $menu->path = $this->path .'/'.trim($index, '/') . '/:relation_uuid';
+            $menu->disable()
+                ->parent($this->parent);
+        }
         MenuRegister::$menu[] = &$menu;
         return $menu;
     }
@@ -52,6 +60,20 @@ class Menu
             ->parent($this->parent)
             ->block($block)
             ->permission($this->permission)->props($props);
+        return $this;
+    }
+
+    public function detail(\Closure $func)
+    {
+        $this->detail_mode = true;
+        $func($this);
+        $this->detail_mode = false;
+        return $this;
+    }
+
+    public function display($display)
+    {
+        $this->display = $display;
         return $this;
     }
 

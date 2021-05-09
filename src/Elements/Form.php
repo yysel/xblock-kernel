@@ -103,24 +103,28 @@ class Form extends Element
     }
 
 
+    //表单确认按钮的显示文字
     public function confirmTitle($confirm_title): self
     {
         $this->confirm_title = $confirm_title;
         return $this;
     }
 
+    //表单取消按钮的显示文字
     public function cancelTitle($cancel_title): self
     {
         $this->cancel_title = $cancel_title;
         return $this;
     }
 
+    //表单的宽度
     public function width($width): self
     {
         $this->width = $width;
         return $this;
     }
 
+    //模态框表单显示标题
     public function title($title = ''): self
     {
         $this->title = $title;
