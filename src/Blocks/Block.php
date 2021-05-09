@@ -83,6 +83,9 @@ class Block
 
     protected $content = [];
 
+    /**
+     * @var Fetch
+     */
     protected $fetch;
 
     protected $driver = 'class';
@@ -256,7 +259,7 @@ class Block
             'button' => $this->operator->currentActions(),
             'content' => $this->getContent(),
             'pagination' => $this->fetch->getPagination(),
-            'parameter' => $this->fetch->parameter,
+            'parameter' => $this->fetch->response_parameter,
             'sorting' => $this->fetch->sorting,
         ];
         $attributes = [
