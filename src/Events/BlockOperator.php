@@ -96,6 +96,7 @@ class BlockOperator
             if (method_exists($this->block, 'queryFields')) {
                 $queryFields = $this->getFieldCreator('queryFields');
                 $queryFields->setDefault('filterable', true);
+                $queryFields->setDefault('invisible', false);
                 $queryFields->setDefault('disImportable', false);
                 $queryFields->setDefault('disExportable', false);
                 $this->block->queryFields($queryFields);
