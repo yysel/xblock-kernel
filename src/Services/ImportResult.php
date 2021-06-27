@@ -29,10 +29,10 @@ class ImportResult extends CollectionBlock
 
     final public function setHeader(array $header)
     {
-        $this->fields = array_merge($header, [
+        $this->fields = collect(array_merge($header, [
             Field::text('import_line', '失败行号'),
             Field::text('import_error', '失败原因'),
-        ]);
+        ]));
 
     }
 }

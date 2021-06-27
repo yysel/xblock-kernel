@@ -8,6 +8,7 @@
 
 namespace XBlock\Kernel\Services;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToArray;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
@@ -56,7 +57,8 @@ class BlockImport implements ToArray, WithHeadingRow, WithMultipleSheets, WithCh
                 $data = $this->formatData($item);
                 if ($data) {
                     $model = new $model($data);
-                    $hook = CallHook::call('beforeImport', $model, $this->block);
+//                    $hook = CallHook::call('beforeImport', $model, $this->block);
+                    $hook = CallHook::call('beforeAdd', $model, $this->block);
                     if ($hook instanceof ErrorCode) {
                         $res = [
                             'import_status' => false,
@@ -64,6 +66,7 @@ class BlockImport implements ToArray, WithHeadingRow, WithMultipleSheets, WithCh
                         ];
                     } else {
                         $save_res = $model->save();
+                        CallHook::call('afterAdd', $model, $this->block);
                         $res = $save_res ? [
                             'import_status' => true,
                             'import_error' => null
@@ -121,7 +124,8 @@ class BlockImport implements ToArray, WithHeadingRow, WithMultipleSheets, WithCh
                     if (!($dict instanceof Collection)) $dict = collect($dict);
                     if ($dict->count()) {
                         $formatDict = $dict->first(function ($item) use ($value, $header, $index) {
-                            $item = (array)$item;
+                            if ($item instanceof Model) $item = $item->toArray();
+                            else $item = (array)$item;
                             return $item['text'] === $value[$index];
                         });
                         if ($formatDict) $formatData[$index] = $formatDict['value'];
@@ -140,6 +144,7 @@ class BlockImport implements ToArray, WithHeadingRow, WithMultipleSheets, WithCh
 
     public function getSuccess(): Collection
     {
+        if (!$this->result) return collect();
         return $this->result->filter(function ($item) {
             return $item['import_status'];
         });
@@ -147,6 +152,7 @@ class BlockImport implements ToArray, WithHeadingRow, WithMultipleSheets, WithCh
 
     public function getError(): Collection
     {
+        if (!$this->result) return collect();
         return $this->result->filter(function ($item) {
             return !$item['import_status'];
         });

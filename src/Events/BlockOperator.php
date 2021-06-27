@@ -75,7 +75,7 @@ class BlockOperator
 
     final public function getFields(): Collection
     {
-        if ($this->block->fields && $this->block->fields instanceof Collection) return $this->fields;
+        if ($this->block->fields && $this->block->fields instanceof Collection) return $this->block->fields;
         if (method_exists($this->block, 'fields')) {
             if (method_exists($this->block, 'editFields')) {
                 $editFields = $this->getFieldCreator('editFields');
