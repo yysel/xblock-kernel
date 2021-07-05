@@ -31,6 +31,8 @@ abstract class Fetch
 
     protected $data_count;
 
+    protected $return_fields = [];
+
 
     public function __construct(Block $block)
     {
@@ -41,8 +43,9 @@ abstract class Fetch
     /*×暴露在外部返回格式化以后的数据
      *@return Array
      */
-    final public function init()
+    final public function init($fields = [])
     {
+        $this->return_fields = $fields;
         $this->builder = $this->getBuilder();
         $this->initParameter()->initSorting()->initPagination()->getContent();
         return $this->builder->values();
@@ -140,6 +143,7 @@ abstract class Fetch
                 $temp_restult = [];
                 foreach ($this->block->fields as $field) {
                     $index = $field->index;
+                    if ($this->return_fields && !in_array($index, $this->return_fields)) continue;
                     $value = isset($item->{$index}) ? $item->{$index} : null;
                     if ($field->relation) $value = $this->getRelationModelValue($item, $field->relation, $value);
                     $method = $field->format_func;

@@ -197,10 +197,10 @@ class Block
     }
 
 
-    final public function getContent()
+    final public function getContent($fields = [])
     {
         if ($this->content) return $this->content;
-        return $this->fetch->init();
+        return $this->fetch->init($fields);
     }
 
 
