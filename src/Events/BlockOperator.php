@@ -103,7 +103,11 @@ class BlockOperator
             }
             $creator = $this->getFieldCreator();
             $this->block->fields($creator);
-            return $this->block->fields = collect($this->block->fields);
+            $this->block->fields = collect($this->block->fields);
+            $this->block->query_fields = $this->block->fields->filter(function ($item) {
+                return $item->filterable = true;
+            });
+            return $this->block->fields;
         } else {
             return $this->block->fields = collect($this->block->header())->filter(function ($item) {
                 return $item instanceof BaseField;

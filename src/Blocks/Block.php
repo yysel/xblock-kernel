@@ -113,6 +113,8 @@ class Block
 
     public $operator;
 
+    public $query_fields = [];
+
     final public function __construct($data = [])
     {
         $this->operator = new BlockOperator($this);

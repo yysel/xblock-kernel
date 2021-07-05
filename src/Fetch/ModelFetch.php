@@ -34,7 +34,7 @@ class ModelFetch extends Fetch
 
     protected function requestWhere()
     {
-        $fields = collect($this->block->fields);
+        $fields = collect($this->block->query_fields);
         foreach ($this->parameter as $key => $value) {
             if ($key == $this->block->tab_key && in_array($this->block->tab_key, $this->block->where_except)) continue;
             if ($value == '__ALL__' || $value === null) continue;

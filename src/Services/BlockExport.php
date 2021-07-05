@@ -34,9 +34,8 @@ class BlockExport implements FromCollection, WithHeadings
 
     public function collection()
     {
-        return $this->is_sample ? collect([]) : $this->block->getContent($this->return_fields->map(function ($item) {
-            return $item->index;
-        })->toArray());
+        $this->block->fields = $this->return_fields;
+        return $this->is_sample ? collect([]) : $this->block->getContent();
     }
 
     public function headings(): array
