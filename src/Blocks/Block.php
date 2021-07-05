@@ -28,6 +28,15 @@ use XBlock\Kernel\Fetch\ModelFetch;
  * @method addFields (FieldCreator $creator)
  * @method editFields (FieldCreator $creator)
  * @method actions (ActionCreator $creator)
+ * @method beforeAdd ()
+ * @method beforeEdit ()
+ * @method beforeDelete()
+ * @method afterAdd()
+ * @method afterEdit()
+ * @method afterDelete()
+ * @method where()
+ * @method beforeWhere()
+ * @method afterWhere()
  */
 class Block
 {
