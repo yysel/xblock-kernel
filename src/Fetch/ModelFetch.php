@@ -36,11 +36,13 @@ class ModelFetch extends Fetch
     {
         $fields = collect($this->block->query_fields);
         foreach ($this->parameter as $key => $value) {
-            if ($key == $this->block->tab_key && in_array($this->block->tab_key, $this->block->where_except)) continue;
             if ($value == '__ALL__' || $value === null) continue;
-            if ($field = $fields->first(function ($item) use ($key) {
+            $field = $key == $this->block->tab_key ? $this->block->fields->first(function ($item) use ($key) {
+                return $item->index == $key;
+            }) : $fields->first(function ($item) use ($key) {
                 return $item->index == $key && ($item->filterable || $key == $this->block->tab_key);
-            })) {
+            });
+            if ($field) {
                 if ($field->relation) {
                     $relation = explode('.', $field->relation);
                     if (count($relation) > 1) {

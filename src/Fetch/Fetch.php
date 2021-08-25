@@ -111,6 +111,7 @@ abstract class Fetch
     private function tabBlockParameter()
     {
         $tab_key = $this->block->tab_key;
+        if (in_array($tab_key, $this->block->where_except)) return $this;
         $default_value = parameter($tab_key, null);
         if ($tab_key) {
             if ($default_value === null) {

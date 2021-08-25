@@ -105,7 +105,7 @@ class BlockOperator
             $this->block->fields($creator);
             $this->block->fields = collect($this->block->fields);
             $this->block->query_fields = $this->block->fields->filter(function ($item) {
-                return $item->filterable = true;
+                return $item->filterable == true;
             });
             return $this->block->fields;
         } else {
